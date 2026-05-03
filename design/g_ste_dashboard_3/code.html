@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f3f3",
+                    "slate-stone": "#708090",
+                    "primary-fixed": "#d2e4fb",
+                    "glacier-mint": "#7FFFD4",
+                    "background": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "primary": "#041627",
+                    "secondary": "#50606f",
+                    "mint-glow": "rgba(127, 255, 212, 0.3)",
+                    "primary-container": "#1a2b3c",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-high": "#e8e8e8",
+                    "secondary-fixed": "#d4e4f6",
+                    "surface-container": "#eeeeee",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface": "#1a1c1c",
+                    "secondary-container": "#d1e1f4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "outline-variant": "#c4c6cd",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#003023",
+                    "on-secondary-container": "#556474",
+                    "on-tertiary-container": "#00a47f",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#44474c",
+                    "midnight-fjord": "#1A2B3C",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#b8c8da",
+                    "on-primary-fixed-variant": "#38485a",
+                    "on-tertiary-fixed-variant": "#00513d",
+                    "on-secondary-fixed-variant": "#394857",
+                    "surface-dim": "#dadada",
+                    "on-tertiary-fixed": "#002117",
+                    "primary-fixed-dim": "#b7c8de",
+                    "tertiary": "#001911",
+                    "surface": "#f9f9f9",
+                    "cloud-white": "#F9F9F9",
+                    "inverse-surface": "#2f3131",
+                    "surface-container-highest": "#e2e2e2",
+                    "outline": "#74777d",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#5adcb3",
+                    "surface-tint": "#4f6073",
+                    "on-primary-container": "#8192a7",
+                    "inverse-primary": "#b7c8de",
+                    "on-primary-fixed": "#0b1d2d",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#79f9ce",
+                    "inverse-on-surface": "#f1f1f1",
+                    "on-secondary-fixed": "#0d1d2a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "stack-md": "24px",
+                    "unit": "8px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(249, 249, 249, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .pebble-shadow {
+            box-shadow: 0 10px 30px -5px rgba(26, 43, 60, 0.05);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-cloud-white font-body-md text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm shadow-slate-200/50 dark:shadow-none docked full-width top-0 sticky z-50 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<img alt="STIVARD Logo" class="h-8 w-8 object-contain" data-alt="A clean, professional studio photograph of a 3D organic pebble-shaped logo with a metallic finish, reflecting soft studio lighting. The pebble sits elegantly on a pristine white surface, embodying Nordic tech minimalism. The lighting is bright and airy, highlighting the smooth curves and premium texture of the brand icon. The overall mood is sophisticated, calm, and technologically advanced." src="https://lh3.googleusercontent.com/aida/ADBb0uhU1rqm8ka-XERNu5sPqlHkyY746nX1CN8NFOLFev2GXIOEwOFa6k2VExliP6RMrcoYSkkMABU83_640mPSuL3FAkyktJSRAnfXI3-cDKfleWkObY5sV3lqRxc429ObMqI46pr4N-KN2stNqh6hWeHak0lJh0jeXW8wXphxREX52R0TAJJgQV5_NiM32kt1yaJHODqyo4OTt-7rlAs8niK3h8oJkn-vkJdqwV5v22EToLzQP_OVCQIQPmP6BJerT1AFOCIjmxclPQ"/>
+<span class="font-inter tracking-tight text-slate-900 dark:text-slate-50 text-xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase">STIVARD</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-midnight-fjord overflow-hidden border border-surface-variant">
+<img alt="Alexander's Profile" class="h-full w-full object-cover" data-alt="A professional and friendly portrait of a young male traveler in a stylish, minimalist Nordic interior. He is wearing a clean charcoal sweater, looking towards the camera with a subtle, confident smile. The background features soft bokeh of a modern architectural space with large windows and light wood elements. The lighting is natural and flattering, emphasizing a premium lifestyle and trustworthy atmosphere." src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8"/>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-6 pt-stack-md pb-stack-lg">
+<!-- Welcome Hero -->
+<section class="mb-stack-md">
+<h1 class="font-display-lg text-display-lg text-midnight-fjord mb-unit">Welcome back, Alexander</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Stewart has curated a few exclusive experiences for your stay in Stockholm today. Your itinerary is ready.</p>
+</section>
+<!-- Bento Grid Insights -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-stack-lg">
+<!-- Featured AI Prompt Card -->
+<div class="md:col-span-8 glass-card pebble-shadow rounded-[32px] p-stack-md border border-surface-variant flex flex-col md:flex-row gap-gutter">
+<div class="flex-1">
+<span class="font-label-caps text-label-caps text-midnight-fjord bg-glacier-mint/30 px-3 py-1 rounded-full mb-stack-sm inline-block uppercase">Concierge Suggestion</span>
+<h2 class="font-headline-sm text-headline-sm text-midnight-fjord mb-stack-sm">Morning Kayak through the Archipelago</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-gutter">The weather is perfect for a private guided tour through the hidden waterways of Södermalm. Stewart can book your guide for 9:00 AM.</p>
+<button class="bg-midnight-fjord text-cloud-white font-label-caps text-label-caps px-6 py-3 rounded-full hover:opacity-90 transition-all flex items-center gap-2">
+<span>Book Experience</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="w-full md:w-1/3 h-48 md:h-auto rounded-2xl overflow-hidden shadow-inner">
+<img class="h-full w-full object-cover" data-alt="A serene, high-definition photograph of a single wooden kayak gliding through crystalline, turquoise Scandinavian waters at sunrise. The morning fog lingers softly over distant, pine-covered rocky islands. The lighting is ethereal and cool, with hints of golden dawn light reflecting on the ripples. The aesthetic is clean, peaceful, and premium, suggesting an exclusive outdoor experience." src="https://lh3.googleusercontent.com/aida/ADBb0uj7I-MY_uh5pkBv3pjx7EVVfQ7fXk-ERR5nElU3LNh9m-td4JNvbpipmCyXOpgmNMq_XJfKY7vGb-u36bMRD3rUCc8NDTJluUs0sa2_yrhGYRFL-Efa0oPHYDTt92vrjgBsftuH5135TPxB3aPJomvd9xZJr36XEoRnlbk7L2v4mnk6jScRY_OtZT4h8aVAl8RTCu5CW97_7CXt15B7GUzmLY2zSeOUf71zJlTXIILPf6WwrCrQTopNXjhYm-Iu4hC_6jKKxGA1O_A"/>
+</div>
+</div>
+<!-- Stats/Status Card -->
+<div class="md:col-span-4 bg-midnight-fjord rounded-[32px] p-stack-md text-cloud-white flex flex-col justify-between">
+<div>
+<h3 class="font-label-caps text-label-caps text-glacier-mint mb-stack-sm uppercase">Your Stay</h3>
+<div class="flex items-end gap-2 mb-unit">
+<span class="font-display-lg text-[40px] font-bold">03</span>
+<span class="font-body-md text-body-md opacity-70 pb-2">Days Remaining</span>
+</div>
+<div class="space-y-stack-sm">
+<div class="flex justify-between items-center text-body-md border-b border-white/10 pb-2">
+<span class="opacity-70">Check-out</span>
+<span>Oct 24, 11:00 AM</span>
+</div>
+<div class="flex justify-between items-center text-body-md border-b border-white/10 pb-2">
+<span class="opacity-70">Reservation</span>
+<span>#ST-91022</span>
+</div>
+</div>
+</div>
+<div class="mt-stack-md">
+<div class="flex gap-2 mb-2">
+<div class="h-1 flex-1 bg-glacier-mint rounded-full"></div>
+<div class="h-1 flex-1 bg-glacier-mint rounded-full"></div>
+<div class="h-1 flex-1 bg-white/20 rounded-full"></div>
+</div>
+<p class="font-label-caps text-[10px] uppercase tracking-widest opacity-60">Onboarding Progress</p>
+</div>
+</div>
+</div>
+<!-- Hidden Gems Section -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-end mb-gutter">
+<div>
+<h2 class="font-headline-md text-headline-md text-midnight-fjord">Hidden Gems</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Curated local secrets by our Scandinavian partners.</p>
+</div>
+<button class="text-midnight-fjord font-label-caps text-label-caps flex items-center gap-1 hover:underline">
+                    View All <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="flex overflow-x-auto gap-gutter pb-6 hide-scrollbar -mx-6 px-6">
+<!-- Card 1 -->
+<div class="min-w-[320px] bg-surface-container-lowest rounded-[32px] overflow-hidden pebble-shadow border border-surface-variant group cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+<div class="h-56 w-full relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A close-up shot of an artisan ceramic coffee cup sitting on a weathered wooden table in a sun-drenched, minimalist Nordic cafe. Large floor-to-ceiling windows show a blurred street scene of Stockholm. The lighting is warm and inviting, casting long shadows. The color palette is dominated by soft creams, natural wood, and muted grey tones, creating a cozy yet high-end atmosphere." src="https://lh3.googleusercontent.com/aida/ADBb0uj7I-MY_uh5pkBv3pjx7EVVfQ7fXk-ERR5nElU3LNh9m-td4JNvbpipmCyXOpgmNMq_XJfKY7vGb-u36bMRD3rUCc8NDTJluUs0sa2_yrhGYRFL-Efa0oPHYDTt92vrjgBsftuH5135TPxB3aPJomvd9xZJr36XEoRnlbk7L2v4mnk6jScRY_OtZT4h8aVAl8RTCu5CW97_7CXt15B7GUzmLY2zSeOUf71zJlTXIILPf6WwrCrQTopNXjhYm-Iu4hC_6jKKxGA1O_A"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-midnight-fjord">Partner Exclusive</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-lg text-midnight-fjord">Artisan Roastery</h3>
+<div class="flex items-center text-glacier-mint">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-midnight-fjord font-bold ml-1">4.9</span>
+</div>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-4 line-clamp-2">Experience the finest Nordic coffee culture in a 17th-century cellar located in Gamla Stan.</p>
+<div class="flex items-center gap-4 text-midnight-fjord">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[12px] font-semibold">08:00 - 18:00</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px] font-semibold">2.4 km</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[320px] bg-surface-container-lowest rounded-[32px] overflow-hidden pebble-shadow border border-surface-variant group cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+<div class="h-56 w-full relative overflow-hidden">
+<div class="absolute inset-0 bg-slate-200"></div>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A wide-angle landscape shot of a modern, glass-walled Scandinavian sauna perched on the edge of a frozen lake. The sun is setting, painting the sky in deep purples and oranges. The architecture is sharp and contemporary, contrasting with the soft, organic snow. The scene is illuminated by the internal warm glow of the sauna, creating a sense of luxury and serene isolation." src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-midnight-fjord">Curated</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-lg text-midnight-fjord">Fjord Spa Ritual</h3>
+<div class="flex items-center text-glacier-mint">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-midnight-fjord font-bold ml-1">5.0</span>
+</div>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-4 line-clamp-2">A private thermal experience overlooking the Baltic sea, followed by a local traditional herb therapy.</p>
+<div class="flex items-center gap-4 text-midnight-fjord">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[12px] font-semibold">By Appt.</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px] font-semibold">12 km</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[320px] bg-surface-container-lowest rounded-[32px] overflow-hidden pebble-shadow border border-surface-variant group cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+<div class="h-56 w-full relative overflow-hidden">
+<div class="absolute inset-0 bg-slate-200"></div>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A minimalist, top-down culinary photograph of a modern Scandinavian dish. A single piece of perfectly seared salmon is placed on a matte black ceramic plate, garnished with vibrant green dill and bright orange roe. The table is a dark, rough-hewn stone surface. The lighting is dramatic and moody, focusing only on the food. The overall aesthetic is one of extreme precision and high-end gastronomy." src="https://lh3.googleusercontent.com/aida/ADBb0uj7I-MY_uh5pkBv3pjx7EVVfQ7fXk-ERR5nElU3LNh9m-td4JNvbpipmCyXOpgmNMq_XJfKY7vGb-u36bMRD3rUCc8NDTJluUs0sa2_yrhGYRFL-Efa0oPHYDTt92vrjgBsftuH5135TPxB3aPJomvd9xZJr36XEoRnlbk7L2v4mnk6jScRY_OtZT4h8aVAl8RTCu5CW97_7CXt15B7GUzmLY2zSeOUf71zJlTXIILPf6WwrCrQTopNXjhYm-Iu4hC_6jKKxGA1O_A"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-midnight-fjord">New Arrival</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-lg text-midnight-fjord">Table 81 Modern</h3>
+<div class="flex items-center text-glacier-mint">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-midnight-fjord font-bold ml-1">4.8</span>
+</div>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-4 line-clamp-2">Modern Nordic fusion restaurant focusing on seasonal foraging and local sea life. Reservation recommended.</p>
+<div class="flex items-center gap-4 text-midnight-fjord">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[12px] font-semibold">17:00 - 00:00</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px] font-semibold">0.5 km</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Floating Quick Actions -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter mb-stack-lg">
+<button class="flex flex-col items-center justify-center p-stack-md bg-white border border-surface-variant rounded-[24px] pebble-shadow hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-midnight-fjord mb-2 group-hover:scale-110 transition-transform">room_service</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider text-midnight-fjord">Room Service</span>
+</button>
+<button class="flex flex-col items-center justify-center p-stack-md bg-white border border-surface-variant rounded-[24px] pebble-shadow hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-midnight-fjord mb-2 group-hover:scale-110 transition-transform">directions_car</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider text-midnight-fjord">Transport</span>
+</button>
+<button class="flex flex-col items-center justify-center p-stack-md bg-white border border-surface-variant rounded-[24px] pebble-shadow hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-midnight-fjord mb-2 group-hover:scale-110 transition-transform">spa</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider text-midnight-fjord">Wellness</span>
+</button>
+<button class="flex flex-col items-center justify-center p-stack-md bg-white border border-surface-variant rounded-[24px] pebble-shadow hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-midnight-fjord mb-2 group-hover:scale-110 transition-transform">help_center</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider text-midnight-fjord">Support</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 rounded-t-[32px] shadow-[0_-8px_30px_rgb(0,0,0,0.04)] border-t border-slate-100 dark:border-slate-800">
+<a class="flex flex-col items-center justify-center text-emerald-500 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20 rounded-2xl px-3 py-1 translate-y-[-2px] transition-transform duration-300" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100" href="#">
+<span class="material-symbols-outlined mb-1">smart_toy</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest">Stewart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100" href="#">
+<span class="material-symbols-outlined mb-1">business_center</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest">Manager</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+<!-- Contextual FAB for Stewart Interaction -->
+<div class="fixed bottom-24 right-6 z-40">
+<button class="h-16 w-16 bg-glacier-mint rounded-full pebble-shadow flex items-center justify-center group hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-midnight-fjord text-3xl group-hover:rotate-12 transition-transform">chat_bubble</span>
+<span class="absolute -top-1 -right-1 flex h-4 w-4">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-midnight-fjord opacity-75"></span>
+<span class="relative inline-flex rounded-full h-4 w-4 bg-midnight-fjord"></span>
+</span>
+</button>
+</div>
+</body></html>

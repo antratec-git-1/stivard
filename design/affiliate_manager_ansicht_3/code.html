@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f3f3",
+                    "slate-stone": "#708090",
+                    "primary-fixed": "#d2e4fb",
+                    "glacier-mint": "#7FFFD4",
+                    "background": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "primary": "#041627",
+                    "secondary": "#50606f",
+                    "mint-glow": "rgba(127, 255, 212, 0.3)",
+                    "primary-container": "#1a2b3c",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-high": "#e8e8e8",
+                    "secondary-fixed": "#d4e4f6",
+                    "surface-container": "#eeeeee",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface": "#1a1c1c",
+                    "secondary-container": "#d1e1f4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "outline-variant": "#c4c6cd",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#003023",
+                    "on-secondary-container": "#556474",
+                    "on-tertiary-container": "#00a47f",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#44474c",
+                    "midnight-fjord": "#1A2B3C",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#b8c8da",
+                    "on-primary-fixed-variant": "#38485a",
+                    "on-tertiary-fixed-variant": "#00513d",
+                    "on-secondary-fixed-variant": "#394857",
+                    "surface-dim": "#dadada",
+                    "on-tertiary-fixed": "#002117",
+                    "primary-fixed-dim": "#b7c8de",
+                    "tertiary": "#001911",
+                    "surface": "#f9f9f9",
+                    "cloud-white": "#F9F9F9",
+                    "inverse-surface": "#2f3131",
+                    "surface-container-highest": "#e2e2e2",
+                    "outline": "#74777d",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#5adcb3",
+                    "surface-tint": "#4f6073",
+                    "on-primary-container": "#8192a7",
+                    "inverse-primary": "#b7c8de",
+                    "on-primary-fixed": "#0b1d2d",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#79f9ce",
+                    "inverse-on-surface": "#f1f1f1",
+                    "on-secondary-fixed": "#0d1d2a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "stack-md": "24px",
+                    "unit": "8px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .nordic-shadow {
+            box-shadow: 0 10px 30px -10px rgba(26, 43, 60, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm shadow-slate-200/50 dark:shadow-none docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-[1200px] mx-auto">
+<div class="flex items-center gap-3">
+<img alt="STIVARD Logo" class="h-10 w-10 object-contain rounded-xl" data-alt="A clean, minimalist 3D rendering of an organic pebble-shaped logo with soft curves and a pearlescent finish. The object floats in a bright, airy studio environment with soft shadows and high-key lighting, reflecting a premium Scandinavian tech aesthetic. The colors are muted whites and soft greys with a subtle cyan glow." src="https://lh3.googleusercontent.com/aida/ADBb0uhU1rqm8ka-XERNu5sPqlHkyY746nX1CN8NFOLFev2GXIOEwOFa6k2VExliP6RMrcoYSkkMABU83_640mPSuL3FAkyktJSRAnfXI3-cDKfleWkObY5sV3lqRxc429ObMqI46pr4N-KN2stNqh6hWeHak0lJh0jeXW8wXphxREX52R0TAJJgQV5_NiM32kt1yaJHODqyo4OTt-7rlAs8niK3h8oJkn-vkJdqwV5v22EToLzQP_OVCQIQPmP6BJerT1AFOCIjmxclPQ"/>
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white uppercase font-headline-sm">STIVARD</span>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<nav class="flex gap-6 font-label-caps text-midnight-fjord">
+<a class="text-emerald-600 font-semibold" href="#">OVERVIEW</a>
+<a class="hover:opacity-80 transition-opacity" href="#">PARTNERS</a>
+<a class="hover:opacity-80 transition-opacity" href="#">ANALYTICS</a>
+<a class="hover:opacity-80 transition-opacity" href="#">REPORTS</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="bg-glacier-mint text-primary font-label-caps px-5 py-2.5 rounded-full shadow-sm hover:brightness-95 transition-all">INVITE PARTNER</button>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-white">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a digital concierge character named Stewart, featuring a friendly and sophisticated appearance with minimalist Scandinavian features. The background is a soft, out-of-focus modern office in light tones. The image is bright, high-quality, and conveys a sense of trust and professional service." src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8"/>
+</div>
+</div>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-midnight-fjord">menu</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-[1200px] mx-auto px-6 py-10 pb-32">
+<!-- Header Section -->
+<section class="mb-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-display-lg text-display-lg text-midnight-fjord mb-2">Affiliate Dashboard</h1>
+<p class="font-body-lg text-body-lg text-slate-stone max-w-2xl">Monitor your B2B partnership performance and revenue growth in real-time.</p>
+</div>
+<div class="flex gap-3 bg-surface-container-lowest p-1.5 rounded-2xl border border-slate-100 nordic-shadow">
+<button class="bg-primary text-white font-label-caps px-4 py-2 rounded-xl">7 DAYS</button>
+<button class="text-slate-stone font-label-caps px-4 py-2 rounded-xl hover:bg-surface-container transition-colors">30 DAYS</button>
+<button class="text-slate-stone font-label-caps px-4 py-2 rounded-xl hover:bg-surface-container transition-colors">ALL TIME</button>
+</div>
+</div>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<!-- Revenue -->
+<div class="bg-surface-container-lowest p-6 rounded-[32px] nordic-shadow border border-white flex flex-col justify-between group hover:translate-y-[-4px] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="bg-primary/5 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-primary">payments</span>
+</div>
+<div class="flex items-center text-emerald-500 font-semibold gap-1 text-sm bg-glacier-mint/20 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>12.5%</span>
+</div>
+</div>
+<p class="font-label-caps text-slate-stone mb-1 uppercase tracking-widest">Gross Revenue</p>
+<h3 class="font-headline-md text-headline-md text-midnight-fjord">$142,850.00</h3>
+</div>
+</div>
+<!-- Conversion Rate -->
+<div class="bg-surface-container-lowest p-6 rounded-[32px] nordic-shadow border border-white flex flex-col justify-between group hover:translate-y-[-4px] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="bg-primary/5 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-primary">ads_click</span>
+</div>
+<div class="flex items-center text-emerald-500 font-semibold gap-1 text-sm bg-glacier-mint/20 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>4.2%</span>
+</div>
+</div>
+<p class="font-label-caps text-slate-stone mb-1 uppercase tracking-widest">Conversion Rate</p>
+<h3 class="font-headline-md text-headline-md text-midnight-fjord">8.42%</h3>
+</div>
+</div>
+<!-- Active Bookings -->
+<div class="bg-surface-container-lowest p-6 rounded-[32px] nordic-shadow border border-white flex flex-col justify-between group hover:translate-y-[-4px] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="bg-primary/5 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+</div>
+<div class="flex items-center text-slate-stone font-semibold gap-1 text-sm bg-surface-container px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs">remove</span>
+<span>0.0%</span>
+</div>
+</div>
+<p class="font-label-caps text-slate-stone mb-1 uppercase tracking-widest">Active Bookings</p>
+<h3 class="font-headline-md text-headline-md text-midnight-fjord">1,204</h3>
+</div>
+</div>
+<!-- New Partners -->
+<div class="bg-surface-container-lowest p-6 rounded-[32px] nordic-shadow border border-white flex flex-col justify-between group hover:translate-y-[-4px] transition-all duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="bg-primary/5 p-3 rounded-2xl">
+<span class="material-symbols-outlined text-primary">group_add</span>
+</div>
+<div class="flex items-center text-emerald-500 font-semibold gap-1 text-sm bg-glacier-mint/20 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>18%</span>
+</div>
+</div>
+<p class="font-label-caps text-slate-stone mb-1 uppercase tracking-widest">New Partners</p>
+<h3 class="font-headline-md text-headline-md text-midnight-fjord">+24</h3>
+</div>
+</div>
+</section>
+<!-- Charts and Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Revenue Performance Chart Placeholder -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-[32px] nordic-shadow border border-white">
+<div class="flex justify-between items-center mb-10">
+<h3 class="font-headline-sm text-headline-sm text-midnight-fjord">Performance Metrics</h3>
+<div class="flex gap-2">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-glacier-mint"></span>
+<span class="font-label-caps text-slate-stone">Revenue</span>
+</div>
+<div class="flex items-center gap-2 ml-4">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-label-caps text-slate-stone">Conversions</span>
+</div>
+</div>
+</div>
+<!-- Simple Geometric Chart Placeholder -->
+<div class="h-64 flex items-end justify-between gap-4 px-2">
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 40%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[60%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">MON</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 65%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[80%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">TUE</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 85%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[70%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">WED</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 55%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[90%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">THU</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 95%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[85%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">FRI</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 70%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[75%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">SAT</p>
+</div>
+<div class="w-full bg-surface-container rounded-t-2xl relative group" style="height: 80%;">
+<div class="absolute bottom-0 w-full bg-glacier-mint rounded-t-2xl h-[65%] group-hover:brightness-105 transition-all"></div>
+<p class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-caps text-slate-400">SUN</p>
+</div>
+</div>
+</div>
+<!-- Top Partners Side Card -->
+<div class="bg-midnight-fjord text-white p-8 rounded-[32px] shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[120px]">stars</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-6 relative z-10">Top Performing Partners</h3>
+<div class="space-y-6 relative z-10">
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-glacier-mint/20 flex items-center justify-center font-bold text-glacier-mint">1</div>
+<div>
+<p class="font-semibold text-white">Nordic Travel Co.</p>
+<p class="text-xs text-slate-stone">124 Bookings</p>
+</div>
+</div>
+<span class="font-bold text-glacier-mint">$42k</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white/60">2</div>
+<div>
+<p class="font-semibold text-white">Elite Stays Ltd</p>
+<p class="text-xs text-slate-stone">98 Bookings</p>
+</div>
+</div>
+<span class="font-bold text-white/80">$31k</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold text-white/60">3</div>
+<div>
+<p class="font-semibold text-white">Peak Expeditions</p>
+<p class="text-xs text-slate-stone">82 Bookings</p>
+</div>
+</div>
+<span class="font-bold text-white/80">$28k</span>
+</div>
+</div>
+<button class="w-full mt-10 py-4 bg-white/10 hover:bg-white/20 transition-colors rounded-2xl font-label-caps tracking-widest text-white border border-white/10">VIEW ALL PARTNERS</button>
+</div>
+</div>
+<!-- Recent Activities Section -->
+<section class="mt-10">
+<div class="bg-surface-container-lowest p-8 rounded-[32px] nordic-shadow border border-white">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-sm text-headline-sm text-midnight-fjord">Recent Transactions</h3>
+<button class="text-primary font-label-caps flex items-center gap-2 hover:opacity-70">
+                        EXPORT CSV <span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-slate-100">
+<th class="pb-4 font-label-caps text-slate-stone uppercase tracking-wider">Partner</th>
+<th class="pb-4 font-label-caps text-slate-stone uppercase tracking-wider">Booking ID</th>
+<th class="pb-4 font-label-caps text-slate-stone uppercase tracking-wider">Status</th>
+<th class="pb-4 font-label-caps text-slate-stone uppercase tracking-wider">Amount</th>
+<th class="pb-4 font-label-caps text-slate-stone uppercase tracking-wider">Commission</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-background/50 transition-colors">
+<td class="py-5 font-semibold text-midnight-fjord">Nordic Travel Co.</td>
+<td class="py-5 text-slate-stone">#STV-9921</td>
+<td class="py-5">
+<span class="px-3 py-1 rounded-full bg-glacier-mint/20 text-emerald-600 text-xs font-bold uppercase tracking-tighter">Completed</span>
+</td>
+<td class="py-5 font-medium">$1,250.00</td>
+<td class="py-5 font-bold text-primary">$187.50</td>
+</tr>
+<tr class="hover:bg-background/50 transition-colors">
+<td class="py-5 font-semibold text-midnight-fjord">Peak Expeditions</td>
+<td class="py-5 text-slate-stone">#STV-9918</td>
+<td class="py-5">
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-primary text-xs font-bold uppercase tracking-tighter">Processing</span>
+</td>
+<td class="py-5 font-medium">$4,200.00</td>
+<td class="py-5 font-bold text-primary">$630.00</td>
+</tr>
+<tr class="hover:bg-background/50 transition-colors">
+<td class="py-5 font-semibold text-midnight-fjord">Elite Stays Ltd</td>
+<td class="py-5 text-slate-stone">#STV-9915</td>
+<td class="py-5">
+<span class="px-3 py-1 rounded-full bg-glacier-mint/20 text-emerald-600 text-xs font-bold uppercase tracking-tighter">Completed</span>
+</td>
+<td class="py-5 font-medium">$850.00</td>
+<td class="py-5 font-bold text-primary">$127.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] rounded-t-[32px] md:hidden">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Gems</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-transform duration-300" href="#">
+<div class="p-2 -mt-8 bg-midnight-fjord rounded-full shadow-lg text-glacier-mint">
+<span class="material-symbols-outlined text-3xl" data-icon="smart_toy">smart_toy</span>
+</div>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Stewart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-emerald-500 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20 rounded-2xl px-3 py-1 translate-y-[-2px] transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="business_center">business_center</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Manager</span>
+</a>
+</nav>
+<!-- Visual Polish: Stewart Guidance Bubble -->
+<div class="fixed bottom-32 right-8 hidden lg:flex flex-col items-end gap-3 max-w-xs animate-pulse hover:animate-none group">
+<div class="glass-card p-4 rounded-[24px] nordic-shadow border-glacier-mint/30">
+<p class="text-sm font-medium text-midnight-fjord">"High traffic from <strong>Nordic Travel Co.</strong> is expected this weekend. Consider updating your exclusive gem offers."</p>
+</div>
+<div class="w-14 h-14 rounded-[20px] bg-white nordic-shadow p-0.5 border border-slate-100 overflow-hidden cursor-pointer transform group-hover:scale-105 transition-transform">
+<img alt="Stewart Assistant" class="w-full h-full object-cover rounded-[18px]" data-alt="A futuristic and friendly digital assistant avatar rendered in a 3D isometric style. The character has soft, approachable features and is set against a clean, architectural background with glass and metal textures. The lighting is soft and professional, emphasizing a modern tech-forward service experience." src="https://lh3.googleusercontent.com/aida/ADBb0uj7I-MY_uh5pkBv3pjx7EVVfQ7fXk-ERR5nElU3LNh9m-td4JNvbpipmCyXOpgmNMq_XJfKY7vGb-u36bMRD3rUCc8NDTJluUs0sa2_yrhGYRFL-Efa0oPHYDTt92vrjgBsftuH5135TPxB3aPJomvd9xZJr36XEoRnlbk7L2v4mnk6jScRY_OtZT4h8aVAl8RTCu5CW97_7CXt15B7GUzmLY2zSeOUf71zJlTXIILPf6WwrCrQTopNXjhYm-Iu4hC_6jKKxGA1O_A"/>
+</div>
+</div>
+</body></html>

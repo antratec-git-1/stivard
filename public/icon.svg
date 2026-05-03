@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1A2B3C" rx="100"/>
+  <!-- Top stone: Glacier Mint -->
+  <ellipse cx="256" cy="180" rx="60" ry="40" fill="#7FFFD4" />
+  <!-- Middle stone: Slate Stone -->
+  <ellipse cx="256" cy="256" rx="80" ry="50" fill="#708090" />
+  <!-- Bottom stone: Midnight Fjord (lighter variant for visibility) -->
+  <ellipse cx="256" cy="340" rx="100" ry="60" fill="#2A4058" />
+</svg>

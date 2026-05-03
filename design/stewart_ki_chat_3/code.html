@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f3f3",
+                    "slate-stone": "#708090",
+                    "primary-fixed": "#d2e4fb",
+                    "glacier-mint": "#7FFFD4",
+                    "background": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "primary": "#041627",
+                    "secondary": "#50606f",
+                    "mint-glow": "rgba(127, 255, 212, 0.3)",
+                    "primary-container": "#1a2b3c",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-high": "#e8e8e8",
+                    "secondary-fixed": "#d4e4f6",
+                    "surface-container": "#eeeeee",
+                    "surface-bright": "#f9f9f9",
+                    "on-surface": "#1a1c1c",
+                    "secondary-container": "#d1e1f4",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "outline-variant": "#c4c6cd",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#003023",
+                    "on-secondary-container": "#556474",
+                    "on-tertiary-container": "#00a47f",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#44474c",
+                    "midnight-fjord": "#1A2B3C",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#b8c8da",
+                    "on-primary-fixed-variant": "#38485a",
+                    "on-tertiary-fixed-variant": "#00513d",
+                    "on-secondary-fixed-variant": "#394857",
+                    "surface-dim": "#dadada",
+                    "on-tertiary-fixed": "#002117",
+                    "primary-fixed-dim": "#b7c8de",
+                    "tertiary": "#001911",
+                    "surface": "#f9f9f9",
+                    "cloud-white": "#F9F9F9",
+                    "inverse-surface": "#2f3131",
+                    "surface-container-highest": "#e2e2e2",
+                    "outline": "#74777d",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#5adcb3",
+                    "surface-tint": "#4f6073",
+                    "on-primary-container": "#8192a7",
+                    "inverse-primary": "#b7c8de",
+                    "on-primary-fixed": "#0b1d2d",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#79f9ce",
+                    "inverse-on-surface": "#f1f1f1",
+                    "on-secondary-fixed": "#0d1d2a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "stack-md": "24px",
+                    "unit": "8px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-morphism {
+            background: rgba(249, 249, 249, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .stewart-bubble {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(127, 255, 212, 0.4);
+            backdrop-filter: blur(8px);
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #e2e2e2;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-cloud-white font-body-md text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center px-6 py-4 w-full border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-surface-container-low border border-slate-100 shadow-sm">
+<img alt="STIVARD Logo" class="w-8 h-8 object-contain" data-alt="A macro close-up of a premium, 3D pebble-shaped logo with a metallic and glass-like finish. The object sits in a high-key, minimalist white environment with soft, clean Scandinavian lighting. The color palette is composed of crisp whites and subtle silver reflections, embodying a Nordic tech aesthetic. The overall mood is sophisticated, modern, and highly precise." src="https://lh3.googleusercontent.com/aida/ADBb0uhU1rqm8ka-XERNu5sPqlHkyY746nX1CN8NFOLFev2GXIOEwOFa6k2VExliP6RMrcoYSkkMABU83_640mPSuL3FAkyktJSRAnfXI3-cDKfleWkObY5sV3lqRxc429ObMqI46pr4N-KN2stNqh6hWeHak0lJh0jeXW8wXphxREX52R0TAJJgQV5_NiM32kt1yaJHODqyo4OTt-7rlAs8niK3h8oJkn-vkJdqwV5v22EToLzQP_OVCQIQPmP6BJerT1AFOCIjmxclPQ"/>
+</div>
+<h1 class="text-xl font-bold tracking-tighter text-slate-900 uppercase font-headline-sm">STIVARD</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-glacier-mint/30 shadow-sm">
+<img alt="Stewart Portrait" class="w-full h-full object-cover" data-alt="A professional portrait of a friendly digital concierge mascot character named Stewart, designed with soft organic geometry and a high-end tech aesthetic. The lighting is diffused and warm, reflecting off surfaces like polished white porcelain. The character is set against a clean, minimalist background of soft grays and glacier mint accents. The style is modern, approachable, and evokes trust." src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8"/>
+</div>
+</div>
+</header>
+<!-- Chat Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile py-stack-md flex flex-col gap-6 max-w-container-max mx-auto w-full custom-scroll pb-40">
+<!-- Stewart Initial Prompt -->
+<div class="flex flex-col items-center justify-center py-stack-lg space-y-4">
+<div class="w-20 h-20 rounded-full glass-morphism border border-glacier-mint/20 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[40px] text-midnight-fjord" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="text-center max-w-sm">
+<h2 class="font-headline-sm text-midnight-fjord mb-2">Good morning, Guest.</h2>
+<p class="font-body-md text-slate-stone">I'm Stewart, your digital concierge. How can I make your stay exceptional today?</p>
+</div>
+</div>
+<!-- Date Separator -->
+<div class="flex justify-center items-center gap-4">
+<div class="h-[1px] flex-1 bg-surface-container-high"></div>
+<span class="font-label-caps text-slate-stone">Today</span>
+<div class="h-[1px] flex-1 bg-surface-container-high"></div>
+</div>
+<!-- Message Thread -->
+<div class="flex flex-col gap-stack-md">
+<!-- User Message -->
+<div class="flex justify-end items-end gap-3 max-w-[85%] self-end">
+<div class="flex flex-col items-end gap-1">
+<div class="bg-glacier-mint text-midnight-fjord px-5 py-3 rounded-[24px] rounded-br-none shadow-sm font-body-md">
+                        Can you recommend a quiet spot for dinner with a view?
+                    </div>
+<span class="text-[10px] text-slate-stone font-label-caps mr-2">10:24 AM</span>
+</div>
+</div>
+<!-- Stewart Message with Card -->
+<div class="flex justify-start items-start gap-3 max-w-[90%]">
+<div class="w-8 h-8 rounded-full bg-midnight-fjord flex-shrink-0 flex items-center justify-center shadow-sm mt-1">
+<span class="material-symbols-outlined text-[18px] text-glacier-mint" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col items-start gap-3">
+<div class="stewart-bubble text-midnight-fjord px-5 py-3 rounded-[24px] rounded-bl-none shadow-sm font-body-md">
+                        Absolutely. For a serene atmosphere with panoramic views, I highly recommend **The Fjord Glasshouse**. It's situated on the north cliff side.
+                    </div>
+<!-- Recommendation Card (Bento Style) -->
+<div class="bg-white border border-slate-100 rounded-[28px] overflow-hidden shadow-md w-full max-w-md group">
+<div class="h-48 w-full overflow-hidden">
+<img alt="Fjord Glasshouse View" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A breathtaking view of a modern glass restaurant perched on a cliff edge overlooking a serene blue fjord at sunset. The architectural style is minimalist Scandinavian with clean lines and large glass panels. The lighting is warm and golden, contrasting with the cool blue water below. The environment is peaceful, exclusive, and representative of a high-end luxury travel experience." src="https://lh3.googleusercontent.com/aida/ADBb0uj7I-MY_uh5pkBv3pjx7EVVfQ7fXk-ERR5nElU3LNh9m-td4JNvbpipmCyXOpgmNMq_XJfKY7vGb-u36bMRD3rUCc8NDTJluUs0sa2_yrhGYRFL-Efa0oPHYDTt92vrjgBsftuH5135TPxB3aPJomvd9xZJr36XEoRnlbk7L2v4mnk6jScRY_OtZT4h8aVAl8RTCu5CW97_7CXt15B7GUzmLY2zSeOUf71zJlTXIILPf6WwrCrQTopNXjhYm-Iu4hC_6jKKxGA1O_A"/>
+</div>
+<div class="p-5 flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Top Pick</span>
+<div class="flex items-center gap-1 text-slate-stone">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[12px] font-semibold">4.9</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-midnight-fjord">The Fjord Glasshouse</h3>
+<p class="text-slate-stone font-body-md text-sm">Fine Nordic dining with floor-to-ceiling windows. Perfect for quiet evenings.</p>
+<button class="mt-2 bg-midnight-fjord text-cloud-white py-3 rounded-full font-label-caps flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+                                BOOK A TABLE
+                            </button>
+</div>
+</div>
+<span class="text-[10px] text-slate-stone font-label-caps ml-2">10:25 AM</span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex justify-end items-end gap-3 max-w-[85%] self-end">
+<div class="flex flex-col items-end gap-1">
+<div class="bg-glacier-mint text-midnight-fjord px-5 py-3 rounded-[24px] rounded-br-none shadow-sm font-body-md">
+                        That looks perfect. Could you also arrange a taxi for 7 PM?
+                    </div>
+<span class="text-[10px] text-slate-stone font-label-caps mr-2">10:27 AM</span>
+</div>
+</div>
+<!-- Stewart Typing State -->
+<div class="flex justify-start items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-midnight-fjord flex-shrink-0 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-glacier-mint" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="stewart-bubble flex gap-1 px-4 py-3 rounded-full">
+<div class="w-1.5 h-1.5 bg-slate-stone/40 rounded-full animate-bounce"></div>
+<div class="w-1.5 h-1.5 bg-slate-stone/40 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 h-1.5 bg-slate-stone/40 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar / Input Area -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+<!-- Floating Input Field -->
+<div class="max-w-container-max mx-auto px-4 pb-28">
+<div class="glass-morphism rounded-[32px] p-2 flex items-center gap-2 border border-white/50 shadow-lg mb-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-stone hover:bg-white/50 transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-body-md placeholder-slate-stone/60 px-2 py-3" placeholder="Ask Stewart anything..." type="text"/>
+<button class="w-12 h-12 bg-glacier-mint rounded-full flex items-center justify-center text-midnight-fjord shadow-sm hover:shadow-glacier-mint/50 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar (From Shared Components) -->
+<nav class="bg-white/90 backdrop-blur-xl fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 rounded-t-[32px] border-t border-slate-100 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Gems</span>
+</div>
+<!-- Active State for Stewart (AI Chat Page) -->
+<div class="flex flex-col items-center justify-center text-emerald-500 bg-emerald-50/50 rounded-2xl px-4 py-2 translate-y-[-2px] transition-transform duration-300">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Stewart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined" data-icon="business_center">business_center</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-widest mt-1">Manager</span>
+</div>
+</nav>
+</div>
+</body></html>

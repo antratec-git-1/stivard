@@ -1,0 +1,117 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--color-surface);
+  border-right: 1px solid rgba(112, 128, 144, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand {
+  padding: var(--spacing-xl) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(112, 128, 144, 0.1);
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  margin-right: var(--spacing-sm);
+}
+
+.brand h2 {
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.nav {
+  padding: var(--spacing-md) 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.navLink {
+  padding: 12px var(--spacing-xl);
+  color: var(--color-text-main);
+  font-weight: 500;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.navLink:hover {
+  background-color: rgba(26, 43, 60, 0.05);
+  border-left-color: var(--color-accent);
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(112, 128, 144, 0.1);
+  margin: var(--spacing-md) 0;
+}
+
+.mainContent {
+  flex-grow: 1;
+  margin-left: 260px; /* offset for fixed sidebar */
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  max-width: 1200px;
+}
+
+/* Page level styles to be shared by dashboard/affiliate */
+.pageHeader {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.pageSubtitle {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.widget {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(112, 128, 144, 0.1);
+}
+
+.widgetTitle {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.widgetValue {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
