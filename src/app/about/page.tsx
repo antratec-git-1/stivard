@@ -5,7 +5,7 @@ import TopAppBar from '@/components/TopAppBar';
 export default function AboutPage() {
   return (
     <div className="bg-cloud-white text-midnight-fjord min-h-screen pb-32 font-body-md antialiased relative selection:bg-glacier-mint/30 selection:text-midnight-fjord">
-      <TopAppBar title="ÜBER UNS" leftIcon="arrow_back" leftHref="/dashboard" />
+      <TopAppBar title="ÜBER UNS" />
 
       <main className="pt-24 px-6 max-w-container-max mx-auto space-y-12 md:space-y-20">
         
