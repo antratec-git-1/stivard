@@ -1,31 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import TopAppBar from '@/components/TopAppBar';
 
 export default function AffiliatePage() {
   return (
     <>
-      {/* TopAppBar Section */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-6 h-16 w-full max-w-container-max mx-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
-              <img className="w-full h-full object-contain mix-blend-multiply" src="/logo.png" alt="Stivard Logo" />
-            </div>
-            <span className="text-xl font-bold tracking-tighter text-[#1A2B3C] dark:text-white uppercase">STIVARD</span>
-          </div>
-          <nav className="hidden md:flex gap-8">
-            <Link className="font-sans font-semibold tracking-tight text-lg text-slate-500 hover:opacity-80 transition-opacity" href="/dashboard">Overview</Link>
-            <Link className="font-sans font-semibold tracking-tight text-lg text-slate-500 hover:opacity-80 transition-opacity" href="#">Analytics</Link>
-            <Link className="font-sans font-semibold tracking-tight text-lg text-[#1A2B3C] hover:opacity-80 transition-opacity" href="/affiliate">Partners</Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <button className="material-symbols-outlined text-[#1A2B3C] text-2xl active:scale-95 duration-200">notifications</button>
-            <Link href="/profile">
-              <div className="material-symbols-outlined text-[#1A2B3C] text-3xl active:scale-95 duration-200 cursor-pointer hover:opacity-80 transition-opacity">account_circle</div>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <TopAppBar title="MANAGER" />
 
       <main className="pt-24 pb-32 px-6 max-w-container-max mx-auto">
         {/* Dashboard Header */}

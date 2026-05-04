@@ -1,21 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import TopAppBar from '@/components/TopAppBar';
 
 export default function GemsPage() {
   return (
     <>
-      {/* Top App Bar */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
-        <div className="flex items-center justify-between px-4 h-14 w-full max-w-container-max mx-auto">
-          <Link href="/profile" className="material-symbols-outlined text-on-tertiary-container text-[28px] active:scale-95 transition-transform">
-            arrow_back
-          </Link>
-          <span className="font-bold tracking-widest text-[#1A2B3C] uppercase text-[15px]">STIVARD</span>
-          <Link href="/profile/settings" className="material-symbols-outlined text-on-tertiary-container text-[28px] active:scale-95 transition-transform">
-            settings
-          </Link>
-        </div>
-      </header>
+      <TopAppBar title="PARTNER & SERVICES" />
 
       <main className="pt-20 pb-32 px-4 max-w-md mx-auto">
         {/* Header Section */}

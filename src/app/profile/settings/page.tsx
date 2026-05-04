@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import TopAppBar from '@/components/TopAppBar';
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
@@ -11,18 +12,9 @@ export default function SettingsPage() {
   return (
     <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-body-md antialiased relative">
       
-      {/* 1. Header (Navigation) - Sticky */}
-      <header className="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-6 h-16 w-full max-w-md mx-auto">
-          <Link href="/profile" className="flex items-center justify-center w-10 h-10 -ml-2 text-slate-500 hover:text-[#111827] active:scale-95 transition-all">
-            <span className="material-symbols-outlined text-[28px]">chevron_left</span>
-          </Link>
-          <h1 className="text-lg font-bold tracking-tight text-[#111827]">Einstellungen</h1>
-          <div className="w-10 h-10"></div> {/* Placeholder for balance */}
-        </div>
-      </header>
+      <TopAppBar title="EINSTELLUNGEN" />
 
-      <main className="pt-6 px-6 max-w-md mx-auto space-y-8">
+      <main className="pt-24 px-6 max-w-md mx-auto space-y-8">
         
         {/* 2. Sektion: Aufenthalt & Hotel (Kontext) */}
         <section>

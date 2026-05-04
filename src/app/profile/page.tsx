@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLocation } from '@/context/LocationContext';
+import TopAppBar from '@/components/TopAppBar';
 
 type VibePill = {
   id: string;
@@ -37,22 +38,7 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-body-md antialiased">
-      {/* TopAppBar - Global Navigation Header */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-6 h-16 w-full max-w-container-max mx-auto">
-          {/* Varde Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Stivard Logo" className="w-8 h-8 object-contain mix-blend-multiply" />
-            <span className="text-xl font-bold tracking-tighter text-[#1A2B3C] dark:text-white ml-2 uppercase">STIVARD</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <button onClick={refreshLocation} className="material-symbols-outlined text-slate-500 hover:text-glacier-mint transition-colors active:scale-95 duration-200" title="Standort aktualisieren">my_location</button>
-            <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white">
-              <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="Avatar" />
-            </div>
-          </div>
-        </div>
-      </header>
+      <TopAppBar />
 
       <main className="pt-24 px-6 max-w-md mx-auto space-y-8">
         

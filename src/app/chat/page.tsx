@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useLocation } from '@/context/LocationContext';
+import TopAppBar from '@/components/TopAppBar';
 
 export default function ChatPage() {
   const { location } = useLocation();
@@ -132,36 +133,18 @@ export default function ChatPage() {
 
   return (
     <div className="text-on-background min-h-screen bg-cloud-white flex flex-col">
-      {/* TopAppBar */}
-      <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-6 h-16 w-full max-w-md mx-auto">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="w-10 h-10 flex-shrink-0">
-              <img 
-                alt="Stivard Logo" 
-                className="w-full h-full object-contain mix-blend-multiply" 
-                src="/logo.png"
-              />
-            </Link>
-            <div>
-              <h1 className="text-xl font-bold tracking-tighter text-[#1A2B3C] dark:text-white">STIVARD</h1>
-              <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                {isLoading ? (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-glacier-mint animate-pulse"></span>
-                    Stewart denkt nach...
-                  </>
-                ) : (
-                  'Chat with Stewart'
-                )}
-              </p>
-            </div>
-          </div>
-          <Link href="/profile" className="text-[#1A2B3C] dark:text-slate-100 active:scale-95 duration-200 hover:opacity-80 transition-opacity">
-            <span className="material-symbols-outlined">account_circle</span>
-          </Link>
-        </div>
-      </nav>
+      <TopAppBar 
+        subtitle={
+          isLoading ? (
+            <>
+              <span className="w-2 h-2 rounded-full bg-glacier-mint animate-pulse"></span>
+              Stewart denkt nach...
+            </>
+          ) : (
+            'Chat with Stewart'
+          )
+        } 
+      />
 
       {/* Main Canvas: Chat Interface */}
       <main className="pt-20 pb-32 px-4 max-w-md mx-auto chat-container flex flex-col h-screen w-full">

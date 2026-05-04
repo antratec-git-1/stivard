@@ -1,33 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import WeatherWidget from '@/components/WeatherWidget';
+import TopAppBar from '@/components/TopAppBar';
 
 export default function DashboardPage() {
   return (
     <>
-      {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <div className="flex items-center justify-between px-6 h-16 w-full max-w-container-max mx-auto">
-          {/* Varde Logo */}
-          <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Stivard Logo" className="w-8 h-8 object-contain mix-blend-multiply" />
-            <span className="text-xl font-bold tracking-tighter text-[#1A2B3C] dark:text-white ml-2">STIVARD</span>
-          </div>
-          <div className="hidden md:flex items-center space-x-8">
-            <Link className="text-midnight-fjord font-semibold font-body-md" href="/dashboard">Discovery</Link>
-            <Link className="text-slate-500 hover:opacity-80 transition-opacity font-body-md" href="#">Reservations</Link>
-            <Link className="text-slate-500 hover:opacity-80 transition-opacity font-body-md" href="/chat">Concierge</Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="material-symbols-outlined text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">search</button>
-            <Link href="/profile">
-              <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
-                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8" alt="Profile" />
-              </div>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <TopAppBar />
 
       <main className="pt-24 pb-32 px-6 max-w-container-max mx-auto min-h-screen">
         {/* Welcome Section */}
@@ -105,6 +84,17 @@ export default function DashboardPage() {
 
             <div className="md:col-span-4 group cursor-pointer">
               <WeatherWidget />
+            </div>
+
+            {/* About Us / Brand Widget */}
+            <div className="md:col-span-12 mt-4 group cursor-pointer">
+              <Link href="/about" className="block relative h-32 md:h-40 rounded-[32px] overflow-hidden pebble-shadow bg-white flex items-center justify-center transition-all duration-500 hover:-translate-y-1 hover:shadow-lg border border-slate-100">
+                <img 
+                  src="/logo.png" 
+                  alt="Stivard Logo" 
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain mix-blend-multiply opacity-80 group-hover:opacity-100 transition-opacity duration-300 group-hover:scale-105" 
+                />
+              </Link>
             </div>
           </div>
         </section>
