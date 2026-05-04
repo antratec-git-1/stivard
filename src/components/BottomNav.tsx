@@ -13,10 +13,10 @@ export default function BottomNav() {
   }
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-    { name: 'Stewart', path: '/chat', icon: 'smart_toy' },
-    { name: 'Partners', path: '/affiliate', icon: 'handshake' },
-    { name: 'Profile', path: '/profile', icon: 'person' },
+    { name: 'HOME', path: '/dashboard', icon: 'grid_view' },
+    { name: 'GEMS', path: '/gems', icon: 'explore' },
+    { name: 'STEWART', path: '/chat', icon: 'smart_toy' },
+    { name: 'MANAGER', path: '/affiliate', icon: 'work' },
   ];
 
   return (

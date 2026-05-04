@@ -20,7 +20,9 @@ export default function AffiliatePage() {
           </nav>
           <div className="flex items-center gap-4">
             <button className="material-symbols-outlined text-[#1A2B3C] text-2xl active:scale-95 duration-200">notifications</button>
-            <div className="material-symbols-outlined text-[#1A2B3C] text-3xl active:scale-95 duration-200">account_circle</div>
+            <Link href="/profile">
+              <div className="material-symbols-outlined text-[#1A2B3C] text-3xl active:scale-95 duration-200 cursor-pointer hover:opacity-80 transition-opacity">account_circle</div>
+            </Link>
           </div>
         </div>
       </header>

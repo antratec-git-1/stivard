@@ -20,9 +20,11 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-4">
             <button className="material-symbols-outlined text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">search</button>
-            <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white">
-              <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8" alt="Stewart" />
-            </div>
+            <Link href="/profile">
+              <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8" alt="Profile" />
+              </div>
+            </Link>
           </div>
         </div>
       </header>
