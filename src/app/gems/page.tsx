@@ -1,13 +1,32 @@
 import React from 'react';
 import Link from 'next/link';
 import TopAppBar from '@/components/TopAppBar';
+import { supabase } from '@/lib/supabase';
+import DynamicWidget from '@/components/DynamicWidget';
 
-export default function GemsPage() {
+export default async function GemsPage() {
+  let widgets: any[] = [];
+  try {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('partner_widgets')
+        .select('*')
+        .eq('active', true)
+        .eq('page_slug', 'gems');
+        
+      if (!error && data) {
+        widgets = data;
+      }
+    }
+  } catch (e) {
+    console.error("Supabase fetch error:", e);
+  }
+
   return (
     <>
       <TopAppBar title="PARTNER & SERVICES" />
 
-      <main className="pt-20 pb-32 px-4 max-w-md mx-auto">
+      <main className="pt-24 pb-32 px-6 max-w-container-max mx-auto min-h-screen">
         {/* Header Section */}
         <div className="flex flex-col items-start mb-8 mt-2">
           <div className="flex items-center gap-3 mb-3">
@@ -21,8 +40,31 @@ export default function GemsPage() {
           </p>
         </div>
 
+        {/* Dynamic Partner Widgets (CMS) */}
+        {widgets.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="material-symbols-outlined text-glacier-mint">auto_awesome</span>
+              <h2 className="text-[20px] font-bold text-midnight-fjord">Partner Highlights</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {widgets.map((widget) => (
+                <div key={widget.id} className="bg-white p-5 rounded-[24px] nordic-shadow border border-slate-100 flex flex-col relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="bg-secondary-container text-midnight-fjord text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                      {widget.title}
+                    </span>
+                    <span className="material-symbols-outlined text-slate-300 text-[20px]">bolt</span>
+                  </div>
+                  <DynamicWidget htmlCode={widget.embed_code} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Featured Cards */}
-        <div className="flex flex-col gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           
           {/* Light Card */}
           <div className="bg-white p-5 rounded-[24px] nordic-shadow border border-slate-100 flex flex-col relative overflow-hidden">
@@ -101,7 +143,7 @@ export default function GemsPage() {
             </button>
           </div>
           
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Service Item 1 */}
             <div className="bg-white p-4 rounded-2xl nordic-shadow border border-slate-50 flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-glacier-mint/15 flex items-center justify-center flex-shrink-0">
