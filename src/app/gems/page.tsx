@@ -6,6 +6,12 @@ import DynamicWidget from '@/components/DynamicWidget';
 
 export default async function GemsPage() {
   let widgets: any[] = [];
+  let debugInfo = {
+    isConfigured: !!supabase,
+    error: null as string | null,
+    dataCount: 0
+  };
+
   try {
     if (supabase) {
       const { data, error } = await supabase
@@ -14,12 +20,15 @@ export default async function GemsPage() {
         .eq('active', true)
         .eq('page_slug', 'gems');
         
-      if (!error && data) {
+      if (error) {
+        debugInfo.error = error.message;
+      } else if (data) {
         widgets = data;
+        debugInfo.dataCount = data.length;
       }
     }
-  } catch (e) {
-    console.error("Supabase fetch error:", e);
+  } catch (e: any) {
+    debugInfo.error = e.message || "Unknown catch error";
   }
 
   return (
@@ -38,6 +47,14 @@ export default async function GemsPage() {
           <p className="text-[14.5px] text-slate-stone leading-relaxed">
             Entdecke exklusive Angebote unserer globalen Partner, kuratiert für deine Reise.
           </p>
+        </div>
+
+        {/* Debug Info (Temporarily added for troubleshooting) */}
+        <div className="mb-8 p-4 bg-slate-800 text-white rounded-xl text-xs font-mono overflow-x-auto">
+          <p className="font-bold mb-2">🔍 Supabase Debug Info:</p>
+          <p>Configured: {debugInfo.isConfigured ? 'Yes' : 'No'}</p>
+          <p>Data Count: {debugInfo.dataCount}</p>
+          {debugInfo.error && <p className="text-red-400 mt-2">Error: {debugInfo.error}</p>}
         </div>
 
         {/* Dynamic Partner Widgets (CMS) */}

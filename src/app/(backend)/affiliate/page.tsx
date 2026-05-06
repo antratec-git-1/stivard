@@ -146,9 +146,31 @@ export default function AffiliatePage() {
                 </tbody>
               </table>
             </div>
+
+            {/* NEW: Partner Widgets Management Section */}
+            <div className="mt-stack-lg">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-headline-sm text-headline-sm">Partner Widgets (CMS)</h3>
+                <Link href="/affiliate/widgets" className="text-midnight-fjord text-xs font-semibold flex items-center gap-1 hover:underline">
+                  MANAGE WIDGETS <span className="material-symbols-outlined text-sm">settings</span>
+                </Link>
+              </div>
+              <Link href="/affiliate/widgets" className="glass-card p-6 rounded-[32px] nordic-shadow flex items-center justify-between group hover:bg-glacier-mint/5 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-midnight-fjord flex items-center justify-center text-white">
+                    <span className="material-symbols-outlined">widgets</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-midnight-fjord">Dynamic Widget Engine</h4>
+                    <p className="text-xs text-slate-stone">Configure 3rd-party scripts and affiliate embeds across the PWA.</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-slate-300 group-hover:text-midnight-fjord transition-colors">arrow_forward</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Recent Bookings */}
+          {/* Recent Activity */}
           <div className="lg:col-span-1">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-headline-sm text-headline-sm">Recent Activity</h3>
