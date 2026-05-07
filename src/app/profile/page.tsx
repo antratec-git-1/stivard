@@ -205,6 +205,42 @@ export default function ProfilePage() {
           </div>
         </section>
 
+        {/* 5. Sektion: „Support & Information“ (Legal & Info) */}
+        <section className="space-y-4">
+          <h2 className="font-semibold text-lg px-2">Support & Info</h2>
+          <div className="bg-white rounded-[12px] overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-50">
+            <Link href="/about" className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors border-b border-slate-50 group">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-midnight-fjord/5 flex items-center justify-center text-midnight-fjord">
+                  <span className="material-symbols-outlined text-[18px]">info</span>
+                </div>
+                <span className="text-sm font-medium">Über STIVARD</span>
+              </div>
+              <span className="material-symbols-outlined text-slate-300 group-hover:text-midnight-fjord transition-colors">chevron_right</span>
+            </Link>
+            
+            <button className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors border-b border-slate-50 group">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-midnight-fjord/5 flex items-center justify-center text-midnight-fjord">
+                  <span className="material-symbols-outlined text-[18px]">contact_support</span>
+                </div>
+                <span className="text-sm font-medium">Hilfe & Support</span>
+              </div>
+              <span className="material-symbols-outlined text-slate-300 group-hover:text-midnight-fjord transition-colors">chevron_right</span>
+            </button>
+
+            <button className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-midnight-fjord/5 flex items-center justify-center text-midnight-fjord">
+                  <span className="material-symbols-outlined text-[18px]">policy</span>
+                </div>
+                <span className="text-sm font-medium">Datenschutz & AGB</span>
+              </div>
+              <span className="material-symbols-outlined text-slate-300 group-hover:text-midnight-fjord transition-colors">chevron_right</span>
+            </button>
+          </div>
+        </section>
+
       </main>
     </div>
   );
