@@ -16,9 +16,9 @@ export default function LoginPage() {
       const expires = new Date(Date.now() + 60 * 60 * 1000).toUTCString();
       document.cookie = `stivard_auth=true; path=/; expires=${expires}; SameSite=Lax`;
       
-      // Redirect to affiliate manager
-      router.push('/affiliate');
-      router.refresh(); // Refresh to ensure middleware sees the cookie
+      // Redirect to affiliate manager - using window.location for a hard reload
+      // to ensure the middleware sees the new cookie immediately.
+      window.location.href = '/affiliate';
     } else {
       setError('Ungültiges Passwort. Bitte versuche es erneut.');
     }

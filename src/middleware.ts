@@ -20,5 +20,5 @@ export function middleware(request: NextRequest) {
 
 // Config to match only the paths we want to protect
 export const config = {
-  matcher: ['/affiliate/:path*'],
+  matcher: ['/affiliate', '/affiliate/:path*'],
 };
