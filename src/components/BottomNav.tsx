@@ -7,13 +7,8 @@ import { usePathname } from 'next/navigation';
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Hide on the landing page
-  if (pathname === '/') {
-    return null;
-  }
-
   const navItems = [
-    { name: 'HOME', path: '/dashboard', icon: 'grid_view' },
+    { name: 'HOME', path: '/', icon: 'grid_view' },
     { name: 'GEMS', path: '/gems', icon: 'explore' },
     { name: 'STEWART', path: '/chat', icon: 'smart_toy' },
     { name: 'MANAGER', path: '/affiliate', icon: 'work' },
