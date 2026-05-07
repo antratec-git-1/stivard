@@ -102,31 +102,31 @@ export default function DiscoveryHub() {
         </section>
 
         {/* AI Mascot Section (Stewart) */}
-        <section className="relative flex flex-col items-center">
-          <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-full max-w-[280px]">
-            <div className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl rounded-bl-none shadow-xl border border-slate-100 animate-in slide-in-from-bottom-2 duration-500 delay-500">
-              <p className="text-body-md text-midnight-fjord">
+        <section className="relative flex flex-col items-center pt-16 pb-12">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[280px]">
+            <div className="bg-white/95 backdrop-blur-xl p-5 rounded-3xl rounded-bl-none shadow-2xl border border-slate-100 animate-in slide-in-from-bottom-2 duration-700 delay-500">
+              <p className="text-body-md text-midnight-fjord font-medium leading-relaxed">
                 Alexander, es wird bald regnen. Schau dir die Indoor-Erlebnisse an!
               </p>
             </div>
           </div>
           
           {/* Stewart FAB Unit */}
-          <Link href="/chat" className="relative group active:scale-95 transition-transform duration-300">
-            <div className="w-20 h-20 bg-white p-1 rounded-full shadow-2xl border-4 border-glacier-mint overflow-hidden">
+          <Link href="/chat" className="relative group active:scale-95 transition-all duration-300 mt-4">
+            <div className="w-24 h-24 bg-white p-1 rounded-full shadow-2xl border-4 border-glacier-mint overflow-hidden ring-8 ring-glacier-mint/10">
               <img 
-                src="https://lh3.googleusercontent.com/aida/ADBb0ujTfLt_Oxu2-zg2k2K2_sCLuMp1mymHIHEal9KjoeqM6w_C43uW-C0SZEG1d_YJH3YgBIRt_dFeggzjtZKQoDC0DnNkfCjEGqv0aQynHlBM2gIKuDPo8MeZg4t638nrIf5IYkjMJ-UP0J8Ntk-RXu3sPT8HPx67gZOgPXQvaEa5f85h6L64tutpEi8_6FksMFlwoaLgQJdQmahk8LPc39P0svJa4wFad2boK4eYUjpYBJ0hmvS71s007-ffiJlCl7mziXN2EuFmQH8" 
-                alt="Stewart"
-                className="w-full h-full object-cover rounded-full"
+                src="/images/stewart.png" 
+                alt="Stewart Mascot"
+                className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-110"
               />
             </div>
             {/* Pulsing indicator */}
-            <div className="absolute top-0 right-0 w-6 h-6 bg-glacier-mint rounded-full border-2 border-white flex items-center justify-center animate-bounce">
-              <span className="material-symbols-outlined text-[14px] text-midnight-fjord font-bold">bolt</span>
+            <div className="absolute top-1 right-1 w-7 h-7 bg-glacier-mint rounded-full border-2 border-white flex items-center justify-center animate-bounce shadow-lg">
+              <span className="material-symbols-outlined text-[16px] text-midnight-fjord font-bold">bolt</span>
             </div>
           </Link>
           
-          <p className="mt-4 text-label-caps text-slate-stone text-center tracking-[0.2em]">Ask Stewart anything</p>
+          <p className="mt-6 text-label-caps text-slate-stone/60 text-center tracking-[0.25em] font-bold text-[10px]">Ask Stewart anything</p>
         </section>
       </main>
     </div>
