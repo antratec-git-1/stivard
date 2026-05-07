@@ -11,7 +11,7 @@ const categories = [
     subLabel: 'KURATIERTE KULINARIK',
     image: '/images/hub/gastronomy.png',
     icon: 'restaurant',
-    href: '/gems?cat=gastronomy'
+    href: '/gastronomy'
   },
   {
     id: 'experiences',
@@ -19,7 +19,7 @@ const categories = [
     subLabel: 'INSIDER-ERLEBNISSE',
     image: '/images/hub/experiences.png',
     icon: 'explore',
-    href: '/gems?cat=experiences'
+    href: '/experiences'
   },
   {
     id: 'hotel',
