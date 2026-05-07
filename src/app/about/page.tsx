@@ -18,6 +18,11 @@ export default function AboutPage() {
 
   useEffect(() => {
     async function fetchContent() {
+      if (!supabase) {
+        console.warn('Supabase not configured');
+        setLoading(false);
+        return;
+      }
       try {
         const { data, error } = await supabase
           .from('page_content')
