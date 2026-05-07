@@ -32,6 +32,7 @@ export const viewport: Viewport = {
   userScalable: false
 };
 
+import Script from "next/script";
 import BottomNav from "@/components/BottomNav";
 import { LocationProvider } from "@/context/LocationContext";
 
@@ -44,26 +45,22 @@ export default function RootLayout({
     <html lang="de" className={`${montserrat.variable} ${inter.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        <script 
-          {...{"nowprocket": ""}} 
-          data-noptimize="1" 
-          data-cfasync="false" 
-          data-wpfc-render="false" 
-          {...{"seraph-accel-crit": "1"}} 
-          data-no-defer="1"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function () {
-                  var script = document.createElement("script");
-                  script.async = 1;
-                  script.src = 'https://emrldco.com/NTI1MTkz.js?t=525193';
-                  document.head.appendChild(script);
-              })();
-            `
-          }}
-        />
       </head>
       <body className="bg-cloud-white font-body-md text-midnight-fjord antialiased">
+        <Script 
+          src="https://widget.getyourguide.com/dist/pa.umd.production.min.js" 
+          strategy="afterInteractive"
+        />
+        <Script id="emerald-script" strategy="afterInteractive">
+          {`
+            (function () {
+                var script = document.createElement("script");
+                script.async = 1;
+                script.src = 'https://emrldco.com/NTI1MTkz.js?t=525193';
+                document.head.appendChild(script);
+            })();
+          `}
+        </Script>
         <LocationProvider>
           {children}
           <BottomNav />
