@@ -152,6 +152,24 @@ export default function GastronomyPage() {
           </div>
         </section>
 
+        {/* TripAdvisor Info Tile */}
+        <section className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+          <div className="bg-slate-50/80 rounded-[32px] p-6 border border-slate-100 flex items-center gap-6">
+            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0">
+              <img 
+                src="/images/stewart_crying.png" 
+                alt="Sad Stewart" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-grow">
+              <p className="text-body-sm text-slate-stone leading-relaxed italic">
+                "The link to TripAdvisor should be here, but unfortunately stivard doesn't have access yet."
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Footer Text */}
         <p className="text-center text-body-xs text-slate-stone/40 py-8">
           Preise und Verfügbarkeit in Echtzeit.
