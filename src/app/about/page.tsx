@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -12,40 +10,31 @@ interface ContentItem {
   content_de: string;
 }
 
-export default function AboutPage() {
-  const [content, setContent] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
+export default async function AboutPage() {
+  const content: Record<string, string> = {};
+  let errorMsg = null;
 
-  useEffect(() => {
-    async function fetchContent() {
-      if (!supabase) {
-        console.warn('Supabase not configured');
-        setLoading(false);
-        return;
+  if (!supabase) {
+    errorMsg = 'Supabase ist in dieser Umgebung nicht konfiguriert.';
+  } else {
+    try {
+      const { data, error } = await supabase
+        .from('page_content')
+        .select('section_key, content_de')
+        .in('section_key', ['about_hero_content', 'legal_imprint_data']);
+
+      if (error) throw error;
+
+      if (data) {
+        (data as ContentItem[]).forEach(item => {
+          content[item.section_key] = item.content_de;
+        });
       }
-      try {
-        const { data, error } = await supabase
-          .from('page_content')
-          .select('section_key, content_de')
-          .in('section_key', ['about_hero_content', 'legal_imprint_data']);
-
-        if (error) throw error;
-
-        const contentMap = (data as ContentItem[]).reduce((acc, item) => {
-          acc[item.section_key] = item.content_de;
-          return acc;
-        }, {} as Record<string, string>);
-
-        setContent(contentMap);
-      } catch (err) {
-        console.error('Error fetching page content:', err);
-      } finally {
-        setLoading(false);
-      }
+    } catch (err: any) {
+      console.error('Error fetching page content:', err);
+      errorMsg = err.message || 'Fehler beim Laden der Inhalte.';
     }
-
-    fetchContent();
-  }, []);
+  }
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] pb-20">
@@ -63,6 +52,16 @@ export default function AboutPage() {
       </div>
 
       <main className="pt-24 px-6 max-w-2xl mx-auto">
+        {errorMsg && (
+          <div className="bg-red-50 border border-red-100 p-6 rounded-2xl mb-8 text-red-800 text-sm flex items-start gap-4">
+            <span className="material-symbols-outlined text-red-500">warning</span>
+            <div>
+              <p className="font-bold mb-1">Fehler beim Laden</p>
+              <p>{errorMsg}</p>
+            </div>
+          </div>
+        )}
+
         {/* Hero Section Card */}
         <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="bg-white rounded-[1.5rem] p-8 shadow-sm mb-6 relative overflow-hidden border border-slate-100">
@@ -71,20 +70,15 @@ export default function AboutPage() {
             
             <h1 className="font-bold text-[#041627] text-headline-md mb-6">Über STIVARD</h1>
             
-            {loading ? (
-              <div className="space-y-4">
-                <div className="h-4 bg-slate-100 rounded w-full animate-pulse"></div>
-                <div className="h-4 bg-slate-100 rounded w-5/6 animate-pulse"></div>
-                <div className="h-4 bg-slate-100 rounded w-4/6 animate-pulse"></div>
-                <div className="h-4 bg-slate-100 rounded w-full animate-pulse"></div>
-              </div>
-            ) : (
-              <div className="text-[#1a1c1c] text-body-lg leading-relaxed markdown-content">
+            <div className="text-[#1a1c1c] text-body-lg leading-relaxed markdown-content">
+              {content.about_hero_content ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {content.about_hero_content || 'Inhalt wird geladen...'}
+                  {content.about_hero_content}
                 </ReactMarkdown>
-              </div>
-            )}
+              ) : (
+                <p className="text-slate-400 italic">Inhalt nicht gefunden oder Konfigurationsfehler.</p>
+              )}
+            </div>
           </div>
         </section>
 
@@ -93,24 +87,27 @@ export default function AboutPage() {
           <div className="bg-white rounded-[1.5rem] p-8 shadow-sm mb-6 border border-slate-100">
             <h2 className="font-bold text-[#041627] text-headline-sm mb-6">Impressum</h2>
             
-            {loading ? (
-              <div className="space-y-4">
-                <div className="h-4 bg-slate-100 rounded w-1/2 animate-pulse"></div>
-                <div className="h-4 bg-slate-100 rounded w-3/4 animate-pulse"></div>
-                <div className="h-4 bg-slate-100 rounded w-1/3 animate-pulse"></div>
-              </div>
-            ) : (
-              <div className="text-[#1a1c1c] text-body-md leading-relaxed markdown-content opacity-90">
+            <div className="text-[#1a1c1c] text-body-md leading-relaxed markdown-content opacity-90">
+              {content.legal_imprint_data ? (
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {content.legal_imprint_data || 'Impressumsdaten werden geladen...'}
+                  {content.legal_imprint_data}
                 </ReactMarkdown>
-              </div>
-            )}
+              ) : (
+                <p className="text-slate-400 italic">Impressumsdaten nicht gefunden oder Konfigurationsfehler.</p>
+              )}
+            </div>
           </div>
         </section>
 
-        {/* Custom styles for Markdown content inside the page component or global CSS */}
-        <style jsx global>{`
+        {/* Footer */}
+        <footer className="mt-12 text-center">
+          <p className="text-slate-stone text-xs font-medium uppercase tracking-[0.2em] opacity-40">
+            Stivard – Your Digital Concierge
+          </p>
+        </footer>
+
+        {/* Custom styles for Markdown content */}
+        <style dangerouslySetInnerHTML={{ __html: `
           .markdown-content p {
             margin-bottom: 1rem;
           }
@@ -135,14 +132,7 @@ export default function AboutPage() {
           .markdown-content li {
             margin-bottom: 0.25rem;
           }
-        `}</style>
-
-        {/* Footer */}
-        <footer className="mt-12 text-center">
-          <p className="text-slate-stone text-xs font-medium uppercase tracking-[0.2em] opacity-40">
-            Stivard – Your Digital Concierge
-          </p>
-        </footer>
+        ` }} />
       </main>
     </div>
   );
