@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { supabase } from '@/lib/supabase';
 import TopAppBar from '@/components/TopAppBar';
 
@@ -72,9 +74,11 @@ export default function AboutPage() {
                 <div className="h-4 bg-slate-100 rounded w-full animate-pulse"></div>
               </div>
             ) : (
-              <p className="text-[#1a1c1c] text-body-lg leading-relaxed whitespace-pre-line">
-                {content.about_hero_content || 'Inhalt wird geladen...'}
-              </p>
+              <div className="text-[#1a1c1c] text-body-lg leading-relaxed markdown-content">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {content.about_hero_content || 'Inhalt wird geladen...'}
+                </ReactMarkdown>
+              </div>
             )}
           </div>
         </section>
@@ -91,12 +95,42 @@ export default function AboutPage() {
                 <div className="h-4 bg-slate-100 rounded w-1/3 animate-pulse"></div>
               </div>
             ) : (
-              <div className="text-[#1a1c1c] text-body-md leading-relaxed whitespace-pre-line">
-                {content.legal_imprint_data || 'Impressumsdaten werden geladen...'}
+              <div className="text-[#1a1c1c] text-body-md leading-relaxed markdown-content opacity-90">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {content.legal_imprint_data || 'Impressumsdaten werden geladen...'}
+                </ReactMarkdown>
               </div>
             )}
           </div>
         </section>
+
+        {/* Custom styles for Markdown content inside the page component or global CSS */}
+        <style jsx global>{`
+          .markdown-content p {
+            margin-bottom: 1rem;
+          }
+          .markdown-content p:last-child {
+            margin-bottom: 0;
+          }
+          .markdown-content strong {
+            font-weight: 700;
+            color: #041627;
+          }
+          .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            font-weight: 700;
+            color: #041627;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+          }
+          .markdown-content ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+          }
+          .markdown-content li {
+            margin-bottom: 0.25rem;
+          }
+        `}</style>
 
         {/* Footer */}
         <footer className="mt-12 text-center">
