@@ -1,174 +1,252 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TopAppBar from '@/components/TopAppBar';
+import { supabase } from '@/lib/supabase';
+import { Loader2, Globe, Bell, Ruler, Brain, Trash2, LogOut, ChevronRight, Check } from 'lucide-react';
+
+const ALEXANDER_ID = '00000000-0000-0000-0000-000000000001';
+
+const LANGUAGES = [
+  { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'en-US', label: 'English', flag: '🇺🇸' },
+  { code: 'sv-SE', label: 'Svenska', flag: '🇸🇪' },
+  { code: 'nb-NO', label: 'Norsk', flag: '🇳🇴' },
+];
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
   const [metricUnits, setMetricUnits] = useState(true);
   const [aiPersonalization, setAiPersonalization] = useState(true);
+  
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [language, setLanguage] = useState('de-DE');
+  const [isLangOpen, setIsLangOpen] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    setLoading(true);
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('language')
+        .eq('id', ALEXANDER_ID)
+        .single();
+      
+      if (data) setLanguage(data.language || 'de-DE');
+    } catch (err) {
+      console.error("Settings fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateLanguage = async (code: string) => {
+    setLanguage(code);
+    setIsLangOpen(false);
+    setSaving(true);
+    try {
+      await supabase
+        .from('profiles')
+        .update({ language: code })
+        .eq('id', ALEXANDER_ID);
+    } catch (err) {
+      console.error("Language update error:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const currentLang = LANGUAGES.find(l => l.code === language) || LANGUAGES[0];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-body-md antialiased relative">
+    <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-inter antialiased relative">
       
       <TopAppBar title="EINSTELLUNGEN" />
 
       <main className="pt-24 px-6 max-w-md mx-auto space-y-8">
         
-        {/* 2. Sektion: Aufenthalt & Hotel (Kontext) */}
+        {/* Sync Indicator */}
+        <div className="h-4 flex items-center justify-end px-2">
+          {saving && (
+            <div className="flex items-center gap-1.5">
+              <Loader2 className="w-3 h-3 text-glacier-mint animate-spin" />
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Speichere...</span>
+            </div>
+          )}
+        </div>
+
+        {/* 2. Sektion: Aufenthalt & Hotel */}
         <section>
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 pl-2">Aktueller Kontext</h2>
-          <div className="bg-white rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-50 p-4">
-            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100">
-              <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-midnight-fjord">
-                <span className="material-symbols-outlined">location_on</span>
+          <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 pl-2">Aktueller Kontext</h2>
+          <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 p-6">
+            <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-50">
+              <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-midnight-fjord">
+                <Globe className="w-5 h-5 text-slate-400" />
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-0.5">Aufenthalt</p>
-                <p className="font-semibold text-sm">Nordic Fjord Hotel</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Aufenthalt</p>
+                <p className="font-bold text-sm text-midnight-fjord">Nordic Fjord Hotel</p>
               </div>
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center px-2">
               <div>
-                <p className="text-xs text-slate-500 mb-0.5">Abreise</p>
-                <p className="font-medium text-sm">05. Mai 2026</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Abreise</p>
+                <p className="font-bold text-sm text-midnight-fjord">05. Mai 2026</p>
               </div>
               <div className="text-right">
-                <p className="text-xs text-slate-500 mb-0.5">Zimmer</p>
-                <p className="font-medium text-sm">304</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Zimmer</p>
+                <p className="font-bold text-sm text-midnight-fjord">304</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 3. Sektion: App-Konfiguration (System) */}
+        {/* 3. Sektion: System */}
         <section>
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 pl-2">System</h2>
-          <div className="bg-white rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-50 overflow-hidden">
+          <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 pl-2">System</h2>
+          <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 overflow-hidden">
             
-            {/* Language */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-400">language</span>
-                <span className="font-medium text-sm">Sprache</span>
+            {/* Language Selection */}
+            <div className="border-b border-slate-50">
+              <div 
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="flex items-center justify-between p-5 cursor-pointer hover:bg-slate-50 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <Globe className="w-5 h-5 text-slate-300" />
+                  <span className="font-bold text-sm text-midnight-fjord">Sprache</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-400">
+                  <span className="text-sm font-bold text-midnight-fjord">{currentLang.label} {currentLang.flag}</span>
+                  <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${isLangOpen ? 'rotate-90' : ''}`} />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-slate-500">
-                <span className="text-sm">Deutsch 🇩🇪</span>
-                <span className="material-symbols-outlined text-lg">chevron_right</span>
-              </div>
+              
+              {/* Language Dropdown (Nordic Style) */}
+              {isLangOpen && (
+                <div className="bg-slate-50/50 px-5 pb-5 pt-2 space-y-1 animate-in fade-in slide-in-from-top-2 duration-300">
+                  {LANGUAGES.map((lang) => (
+                    <div 
+                      key={lang.code}
+                      onClick={() => updateLanguage(lang.code)}
+                      className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${
+                        language === lang.code ? 'bg-white shadow-sm ring-1 ring-glacier-mint/20' : 'hover:bg-white/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-base">{lang.flag}</span>
+                        <span className={`text-sm ${language === lang.code ? 'font-bold text-midnight-fjord' : 'font-medium text-slate-500'}`}>
+                          {lang.label}
+                        </span>
+                      </div>
+                      {language === lang.code && <Check className="w-4 h-4 text-glacier-mint" />}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Notifications */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-100">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-400">notifications</span>
-                <span className="font-medium text-sm">Reise-Updates</span>
+            <div className="flex items-center justify-between p-5 border-b border-slate-50">
+              <div className="flex items-center gap-4">
+                <Bell className="w-5 h-5 text-slate-300" />
+                <span className="font-bold text-sm text-midnight-fjord">Reise-Updates</span>
               </div>
               <button 
                 onClick={() => setNotifications(!notifications)}
-                className={`w-11 h-6 rounded-full relative transition-colors duration-300 focus:outline-none ${notifications ? 'bg-midnight-fjord' : 'bg-slate-200'}`}
+                className={`w-11 h-6 rounded-full relative transition-all duration-300 focus:outline-none ${notifications ? 'bg-midnight-fjord shadow-lg shadow-midnight-fjord/10' : 'bg-slate-100'}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow-sm absolute top-0.5 transition-transform duration-300 ${notifications ? 'translate-x-5.5 left-[2px]' : 'translate-x-0 left-[2px]'}`}></div>
+                <div className={`w-4 h-4 bg-white rounded-full shadow-sm absolute top-1 transition-all duration-300 ${notifications ? 'right-1' : 'left-1'}`}></div>
               </button>
             </div>
 
             {/* Units */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-slate-400">straighten</span>
+            <div className="flex items-center justify-between p-5">
+              <div className="flex items-center gap-4">
+                <Ruler className="w-5 h-5 text-slate-300" />
                 <div>
-                  <p className="font-medium text-sm">Metrische Einheiten</p>
-                  <p className="text-[10px] text-slate-500">Celsius / Kilometer</p>
+                  <p className="font-bold text-sm text-midnight-fjord">Metrische Einheiten</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Celsius / Kilometer</p>
                 </div>
               </div>
               <button 
                 onClick={() => setMetricUnits(!metricUnits)}
-                className={`w-11 h-6 rounded-full relative transition-colors duration-300 focus:outline-none ${metricUnits ? 'bg-midnight-fjord' : 'bg-slate-200'}`}
+                className={`w-11 h-6 rounded-full relative transition-all duration-300 focus:outline-none ${metricUnits ? 'bg-midnight-fjord shadow-lg shadow-midnight-fjord/10' : 'bg-slate-100'}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow-sm absolute top-0.5 transition-transform duration-300 ${metricUnits ? 'translate-x-5.5 left-[2px]' : 'translate-x-0 left-[2px]'}`}></div>
+                <div className={`w-4 h-4 bg-white rounded-full shadow-sm absolute top-1 transition-all duration-300 ${metricUnits ? 'right-1' : 'left-1'}`}></div>
               </button>
             </div>
           </div>
         </section>
 
-        {/* 4. Sektion: Datenschutz & KI (Privacy) */}
+        {/* 4. Sektion: Datenschutz & KI */}
         <section>
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 pl-2">Datenschutz & KI</h2>
-          <div className="bg-white rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-50 overflow-hidden">
+          <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 pl-2">Datenschutz & KI</h2>
+          <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 overflow-hidden">
             
-            {/* AI Personalization */}
-            <div className="flex items-start justify-between p-4 border-b border-slate-100">
-              <div className="flex gap-3 pr-4">
-                <span className="material-symbols-outlined text-slate-400 mt-0.5">psychology</span>
+            <div className="flex items-start justify-between p-6 border-b border-slate-50">
+              <div className="flex gap-4 pr-4">
+                <Brain className="w-5 h-5 text-slate-300 mt-1" />
                 <div>
-                  <p className="font-medium text-sm">KI-Personalisierung erlauben</p>
-                  <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
+                  <p className="font-bold text-sm text-midnight-fjord">KI-Personalisierung</p>
+                  <p className="text-[10px] font-medium text-slate-400 mt-2 leading-relaxed">
                     Ermöglicht Stivard, sich an deine Vorlieben für zukünftige Empfehlungen zu erinnern.
                   </p>
                 </div>
               </div>
               <button 
                 onClick={() => setAiPersonalization(!aiPersonalization)}
-                className={`w-11 h-6 rounded-full relative transition-colors duration-300 flex-shrink-0 focus:outline-none ${aiPersonalization ? 'bg-midnight-fjord' : 'bg-slate-200'}`}
+                className={`w-11 h-6 rounded-full relative transition-all duration-300 flex-shrink-0 focus:outline-none ${aiPersonalization ? 'bg-midnight-fjord shadow-lg shadow-midnight-fjord/10' : 'bg-slate-100'}`}
               >
-                <div className={`w-5 h-5 bg-white rounded-full shadow-sm absolute top-0.5 transition-transform duration-300 ${aiPersonalization ? 'translate-x-5.5 left-[2px]' : 'translate-x-0 left-[2px]'}`}></div>
+                <div className={`w-4 h-4 bg-white rounded-full shadow-sm absolute top-1 transition-all duration-300 ${aiPersonalization ? 'right-1' : 'left-1'}`}></div>
               </button>
             </div>
 
-            {/* Clear History */}
-            <button className="w-full text-left p-4 flex items-center gap-3 text-red-500 hover:bg-red-50 transition-colors">
-              <span className="material-symbols-outlined">delete</span>
-              <span className="font-medium text-sm">Chat-Verlauf zurücksetzen</span>
+            <button className="w-full text-left p-6 flex items-center gap-4 text-rose-500 hover:bg-rose-50 transition-colors font-bold text-sm">
+              <Trash2 className="w-5 h-5" />
+              <span>Chat-Verlauf zurücksetzen</span>
             </button>
           </div>
-        </section>
-
-        {/* BWL-Tipp: Stivard für mein Unternehmen */}
-        <section>
-          <Link href="#" className="block bg-gradient-to-r from-slate-800 to-midnight-fjord rounded-[12px] p-5 shadow-md relative overflow-hidden group">
-            <div className="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors"></div>
-            <div className="relative z-10 flex items-center justify-between">
-              <div>
-                <span className="inline-block px-2 py-0.5 bg-white/10 text-white/90 text-[9px] font-bold tracking-widest rounded mb-1.5 uppercase">
-                  Für Unternehmer
-                </span>
-                <h3 className="text-white font-semibold text-sm mb-0.5">Stivard für dein Hotel?</h3>
-                <p className="text-white/60 text-[11px]">Biete deinen Gästen denselben Service.</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-sm">
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </div>
-            </div>
-          </Link>
         </section>
 
         {/* 5. Sektion: Rechtliches & Info */}
-        <section>
-          <div className="bg-white rounded-[12px] shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-slate-50 overflow-hidden mb-6">
-            <Link href="#" className="flex items-center justify-between p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors">
-              <span className="font-medium text-sm">Datenschutz</span>
-              <span className="material-symbols-outlined text-slate-400 text-lg">chevron_right</span>
+        <section className="space-y-4">
+          <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 overflow-hidden">
+            <Link href="#" className="flex items-center justify-between p-5 border-b border-slate-50 hover:bg-slate-50 transition-colors group">
+              <span className="font-bold text-sm text-midnight-fjord">Datenschutz</span>
+              <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-midnight-fjord transition-all" />
             </Link>
-            <Link href="#" className="flex items-center justify-between p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors">
-              <span className="font-medium text-sm">AGB</span>
-              <span className="material-symbols-outlined text-slate-400 text-lg">chevron_right</span>
+            <Link href="#" className="flex items-center justify-between p-5 border-b border-slate-50 hover:bg-slate-50 transition-colors group">
+              <span className="font-bold text-sm text-midnight-fjord">AGB</span>
+              <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-midnight-fjord transition-all" />
             </Link>
-            <Link href="#" className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
-              <span className="font-medium text-sm">Impressum</span>
-              <span className="material-symbols-outlined text-slate-400 text-lg">chevron_right</span>
+            <Link href="#" className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group">
+              <span className="font-bold text-sm text-midnight-fjord">Impressum</span>
+              <ChevronRight className="w-5 h-5 text-slate-200 group-hover:text-midnight-fjord transition-all" />
             </Link>
           </div>
           
-          <div className="flex flex-col items-center justify-center space-y-6">
-            {/* Logout Button */}
-            <button className="w-full py-3.5 rounded-xl border border-[#111827] bg-white text-[#111827] font-semibold text-sm flex items-center justify-center gap-2 hover:bg-slate-50 active:scale-95 transition-all">
-              <span className="material-symbols-outlined text-[18px]">logout</span>
+          <div className="flex flex-col items-center justify-center pt-4">
+            <button className="w-full h-16 rounded-[20px] bg-white border border-midnight-fjord text-midnight-fjord font-bold text-sm flex items-center justify-center gap-3 active:scale-95 transition-all">
+              <LogOut className="w-5 h-5" />
               Abmelden
             </button>
 
-            {/* Version */}
-            <p className="text-[10px] text-slate-400 font-medium">Stivard v1.0.4 – Made with ☕ in Stockholm</p>
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest mt-8">Stivard v1.0.4 – Made in Stockholm</p>
           </div>
         </section>
 
