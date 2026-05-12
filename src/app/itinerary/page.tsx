@@ -7,8 +7,9 @@ import {
   Loader2, Bed, Compass, Utensils, Car, Plus, Calendar as CalendarIcon, 
   List, Sparkles, MapPin, Clock, X, Plane, Train, Check, Trash2, 
   ChevronDown, Globe, AlertTriangle, Search, Navigation, ArrowRight,
-  ArrowDownLeft, ArrowUpRight
+  ArrowDownLeft, ArrowUpRight, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
+import { searchViatorAction, getViatorProductLocationAction } from '@/app/test-viator/actions';
 
 const ALEXANDER_ID = '00000000-0000-0000-0000-000000000001';
 const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
@@ -63,10 +64,10 @@ type ExplodedItem = ItineraryItem & {
 function useGoogleMaps() {
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
-    if (window.google?.maps?.places) { setIsLoaded(true); return; }
+    if ((window as any).google?.maps?.places) { setIsLoaded(true); return; }
     const existingScript = document.getElementById('google-maps-sdk');
     if (existingScript) {
-      const checkLoaded = setInterval(() => { if (window.google?.maps?.places) { setIsLoaded(true); clearInterval(checkLoaded); } }, 100);
+      const checkLoaded = setInterval(() => { if ((window as any).google?.maps?.places) { setIsLoaded(true); clearInterval(checkLoaded); } }, 100);
       return () => clearInterval(checkLoaded);
     }
     const script = document.createElement('script');
@@ -87,10 +88,10 @@ function LocationAutocomplete({ label, value, onChange, placeholder, icon: Icon,
   const placesService = useRef<any>(null);
 
   useEffect(() => {
-    if (isLoaded && !autocompleteService.current && window.google?.maps?.places) {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+    if (isLoaded && !autocompleteService.current && (window as any).google?.maps?.places) {
+      autocompleteService.current = new (window as any).google.maps.places.AutocompleteService();
       const dummyElement = document.createElement('div');
-      placesService.current = new window.google.maps.places.PlacesService(dummyElement);
+      placesService.current = new (window as any).google.maps.places.PlacesService(dummyElement);
     }
   }, [isLoaded]);
 
@@ -175,6 +176,12 @@ export default function ItineraryPage() {
   const [startLocation, setStartLocation] = useState<any>({ name: '' });
   const [endLocation, setEndLocation] = useState<any>({ name: '' });
   const [isSaving, setIsSaving] = useState(false);
+  const [viatorQuery, setViatorQuery] = useState('');
+  const [viatorResults, setViatorResults] = useState<any[]>([]);
+  const [isViatorSearching, setIsViatorSearching] = useState(false);
+  const [viatorError, setViatorError] = useState<string | null>(null);
+  const [lastSearchTerm, setLastSearchTerm] = useState<string>('');
+  const [isFetchingLocation, setIsFetchingLocation] = useState<string | null>(null);
 
   useEffect(() => { fetchTrips(); }, []);
   useEffect(() => { if (currentTrip) fetchItinerary(); }, [currentTrip]);
@@ -232,6 +239,10 @@ export default function ItineraryPage() {
     else { setStartLocation({ name: '' }); }
     
     setEndLocation({ name: '' });
+    setViatorQuery('');
+    setViatorResults([]);
+    setViatorError(null);
+    setLastSearchTerm('');
     setIsModalOpen(true);
   };
 
@@ -261,6 +272,52 @@ export default function ItineraryPage() {
       end_location_lng: (mainCategory === 'transport' && ['car','plane','train'].includes(subCategory)) ? endLocation.lng : null
     };
     try { if (editingItem) await supabase.from('itinerary_items').update(itemData).eq('id', editingItem.id); else await supabase.from('itinerary_items').insert([itemData]); await fetchItinerary(); setIsModalOpen(false); } finally { setIsSaving(false); }
+  };
+
+  const handleViatorSearch = async () => {
+    if (!startLocation?.name || isViatorSearching) return;
+    setIsViatorSearching(true);
+    setViatorError(null);
+    try {
+      let searchLoc = startLocation.name;
+      if (searchLoc.includes(',')) {
+        const parts = searchLoc.split(',');
+        if (parts.length >= 2) searchLoc = parts[parts.length - 2].trim();
+      }
+      
+      const term = `${searchLoc} ${viatorQuery}`.trim();
+      setLastSearchTerm(term);
+      
+      const response = await searchViatorAction(term);
+      const results = response?.products?.results;
+      if (results && results.length > 0) {
+        setViatorResults(results);
+      } else {
+        setViatorResults([]);
+        setViatorError('Keine Ergebnisse für diese Suchanfrage gefunden.');
+      }
+    } catch (error: any) {
+      console.error("Viator search failed:", error);
+      setViatorError(error.message || 'Verbindungsfehler zur Viator API.');
+      setViatorResults([]);
+    } finally {
+      setIsViatorSearching(false);
+    }
+  };
+
+  const selectViatorProduct = async (product: any) => {
+    setNewTitle(product.title);
+    setIsFetchingLocation(product.productCode);
+    try {
+      const exactLocation = await getViatorProductLocationAction(product.productCode);
+      if (exactLocation && exactLocation.name) {
+        setEndLocation(exactLocation);
+      }
+    } catch (err) {
+      console.error("Location fetch error:", err);
+    } finally {
+      setIsFetchingLocation(null);
+    }
   };
 
   const handleDeleteItem = async () => { if (!editingItem) return; setIsSaving(true); try { await supabase.from('itinerary_items').delete().eq('id', editingItem.id); await fetchItinerary(); setIsModalOpen(false); } finally { setIsSaving(false); } };
@@ -441,6 +498,89 @@ export default function ItineraryPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* VIATOR EXPLORE SECTION */}
+                  {startLocation?.name && (
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-8 border-t border-slate-100 space-y-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="p-2 bg-midnight-fjord text-white rounded-lg shadow-md"><Sparkles className="w-4 h-4" /></div>
+                        <div><h3 className="text-sm font-black text-midnight-fjord tracking-tight">STIVARD EXPLORE</h3><p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Powered by Viator</p></div>
+                      </div>
+                      
+                      <div className="flex gap-4">
+                        <div className="flex-1 relative">
+                          <input type="text" value={viatorQuery} onChange={(e) => setViatorQuery(e.target.value)} placeholder="Suche Parameter (z.B. Bootstour, Museum...)" className="w-full bg-slate-100/50 rounded-[20px] py-5 px-6 font-bold text-midnight-fjord outline-none border-2 border-transparent focus:border-glacier-mint transition-all text-xs" />
+                          <Search className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                        </div>
+                        <button onClick={handleViatorSearch} disabled={isViatorSearching} className="px-8 bg-glacier-mint text-midnight-fjord rounded-[20px] font-black text-[10px] tracking-widest hover:bg-glacier-mint/80 transition-all flex items-center gap-2 shadow-lg shadow-glacier-mint/20">
+                          {isViatorSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Globe className="w-4 h-4" /> FIND EVENTS</>}
+                        </button>
+                      </div>
+
+                      {lastSearchTerm && !isViatorSearching && (
+                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest px-2">
+                          Suche nach: <span className="text-midnight-fjord">"{lastSearchTerm}"</span>
+                        </div>
+                      )}
+
+                      {viatorError && (
+                        <div className="p-4 bg-rose-50 text-rose-500 text-xs font-bold rounded-xl border border-rose-100 flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4" /> {viatorError}
+                        </div>
+                      )}
+
+                      {viatorResults.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto no-scrollbar pb-4 pr-2">
+                          {viatorResults.map((product: any) => (
+                            <div key={product.productCode} className="relative flex items-start gap-4 p-4 bg-white border border-slate-100 rounded-[24px] text-left hover:border-glacier-mint transition-all group shadow-sm">
+                              
+                              {/* Loading Overlay */}
+                              {isFetchingLocation === product.productCode && (
+                                <div className="absolute inset-0 bg-white/80 rounded-[24px] z-30 flex items-center justify-center backdrop-blur-sm">
+                                  <Loader2 className="w-6 h-6 text-glacier-mint animate-spin" />
+                                </div>
+                              )}
+
+                              {/* Klickbarer Bereich für die Titel-Übernahme */}
+                              <button onClick={() => selectViatorProduct(product)} disabled={isFetchingLocation !== null} className="absolute inset-0 w-full h-full z-0 rounded-[24px] focus:outline-none disabled:cursor-wait" title="Titel und Ort in Event übernehmen"></button>
+                              
+                              <div className="w-16 h-16 bg-slate-50 rounded-2xl flex-shrink-0 overflow-hidden flex items-center justify-center relative z-10 pointer-events-none">
+                                {product.images?.[0]?.variants?.[0]?.url ? (
+                                  <img src={product.images[0].variants[0].url} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                ) : (
+                                  <ImageIcon className="w-6 h-6 text-slate-200" />
+                                )}
+                              </div>
+                              <div className="flex-1 z-10 pointer-events-none">
+                                <div className="text-[10px] font-bold text-glacier-mint uppercase tracking-tighter mb-1">
+                                  {product.pricing?.summary?.fromPrice ? `Ab ${product.pricing.summary.fromPrice} ${product.pricing.currency || 'EUR'}` : 'Ab Preis prüfen'}
+                                </div>
+                                <h4 className="text-[11px] font-black text-midnight-fjord leading-tight line-clamp-2 pr-8">{product.title}</h4>
+                                <div className="flex items-center gap-1 mt-2">
+                                  <span className="text-[9px] font-bold text-slate-400">★ {product.reviews?.combinedAverageRating?.toFixed(1) || 'Neu'}</span>
+                                  <span className="text-[8px] text-slate-300">({product.reviews?.totalReviews || 0})</span>
+                                </div>
+                              </div>
+                              
+                              {/* Viator Link Button (Z-Index höher, damit er klickbar bleibt) */}
+                              {product.productUrl && (
+                                <a 
+                                  href={product.productUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="absolute top-4 right-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center hover:bg-midnight-fjord hover:text-white transition-colors text-slate-400 z-20 shadow-sm"
+                                  title="Auf Viator ansehen"
+                                >
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
                   <div className="flex gap-4 pt-6">{editingItem && <button onClick={handleDeleteItem} className="w-20 h-20 bg-rose-50 text-rose-500 rounded-[28px] flex items-center justify-center shadow-sm"><Trash2 className="w-8 h-8" /></button>}<button onClick={handleSaveItem} disabled={isSaving || !newTitle} className="flex-1 h-20 bg-midnight-fjord text-white rounded-[28px] font-black text-lg flex items-center justify-center gap-3 hover:bg-midnight-fjord/90 transition-all shadow-xl shadow-midnight-fjord/20">{isSaving ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Check className="w-7 h-7 text-glacier-mint" /> EINTRAG SPEICHERN</>}</button></div>
                 </div>
               </motion.div>
