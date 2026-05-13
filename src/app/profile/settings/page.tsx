@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopAppBar from '@/components/TopAppBar';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Globe, Bell, Ruler, Brain, Trash2, LogOut, ChevronRight, Check } from 'lucide-react';
-
-const ALEXANDER_ID = '00000000-0000-0000-0000-000000000001';
 
 const LANGUAGES = [
   { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
@@ -24,18 +23,40 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [language, setLanguage] = useState('de-DE');
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setUserId(session.user.id);
+      }
+    };
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) router.push('/login');
+      else setUserId(session.user.id);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (userId) fetchSettings();
+  }, [userId]);
 
   const fetchSettings = async () => {
+    if (!userId) return;
     setLoading(true);
     try {
       const { data } = await supabase
         .from('profiles')
         .select('language')
-        .eq('id', ALEXANDER_ID)
+        .eq('id', userId)
         .single();
       
       if (data) setLanguage(data.language || 'de-DE');
@@ -47,6 +68,7 @@ export default function SettingsPage() {
   };
 
   const updateLanguage = async (code: string) => {
+    if (!userId) return;
     setLanguage(code);
     setIsLangOpen(false);
     setSaving(true);
@@ -54,7 +76,7 @@ export default function SettingsPage() {
       await supabase
         .from('profiles')
         .update({ language: code })
-        .eq('id', ALEXANDER_ID);
+        .eq('id', userId);
     } catch (err) {
       console.error("Language update error:", err);
     } finally {
@@ -64,10 +86,11 @@ export default function SettingsPage() {
 
   const currentLang = LANGUAGES.find(l => l.code === language) || LANGUAGES[0];
 
-  if (loading) {
+  if (loading || !userId) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin" />
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6">
+        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin mb-4" />
+        <p className="text-midnight-fjord font-bold text-sm">Einstellungen werden geladen...</p>
       </div>
     );
   }
@@ -241,7 +264,10 @@ export default function SettingsPage() {
           </div>
           
           <div className="flex flex-col items-center justify-center pt-4">
-            <button className="w-full h-16 rounded-[20px] bg-white border border-midnight-fjord text-midnight-fjord font-bold text-sm flex items-center justify-center gap-3 active:scale-95 transition-all">
+            <button 
+              onClick={async () => { await supabase.auth.signOut(); router.push('/login'); }}
+              className="w-full h-16 rounded-[20px] bg-white border border-midnight-fjord text-midnight-fjord font-bold text-sm flex items-center justify-center gap-3 active:scale-95 transition-all"
+            >
               <LogOut className="w-5 h-5" />
               Abmelden
             </button>

@@ -2,13 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLocation } from '@/context/LocationContext';
 import TopAppBar from '@/components/TopAppBar';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Settings, Brain, Heart, Ticket, Gift, Award, ChevronDown, Info, HelpCircle, ShieldCheck, Edit2, ChevronRight } from 'lucide-react';
-
-// Feste ID für Alexander (Auto-Login Demo)
-const ALEXANDER_ID = '00000000-0000-0000-0000-000000000001';
+import { Loader2, Settings, Brain, Heart, Ticket, Gift, Award, ChevronDown, Info, HelpCircle, ShieldCheck, Edit2, ChevronRight, LogOut } from 'lucide-react';
 
 type VibePill = {
   id: string;
@@ -29,19 +27,41 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [activeVibes, setActiveVibes] = useState<Set<string>>(new Set());
   const [dislikes, setDislikes] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
   const { location } = useLocation();
+  const router = useRouter();
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setUserId(session.user.id);
+      }
+    };
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) router.push('/login');
+      else setUserId(session.user.id);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (userId) fetchProfile();
+  }, [userId]);
 
   const fetchProfile = async () => {
+    if (!userId) return;
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', ALEXANDER_ID)
+        .eq('id', userId)
         .single();
 
       if (data) {
@@ -57,12 +77,13 @@ export default function ProfilePage() {
   };
 
   const updateProfileField = async (fields: any) => {
+    if (!userId) return;
     setSaving(true);
     try {
       await supabase
         .from('profiles')
         .update(fields)
-        .eq('id', ALEXANDER_ID);
+        .eq('id', userId);
     } catch (err) {
       console.error("Update error:", err);
     } finally {
@@ -86,10 +107,11 @@ export default function ProfilePage() {
     ? "Gast im Nordic Fjord Hotel" 
     : `Aktuell in: ${location?.name || "Explorer Modus"}`;
 
-  if (loading) {
+  if (loading || !userId) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin" />
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6">
+        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin mb-4" />
+        <p className="text-midnight-fjord font-bold text-sm">Profil wird geladen...</p>
       </div>
     );
   }
@@ -119,9 +141,18 @@ export default function ProfilePage() {
               </span>
             </div>
           </div>
-          <Link href="/profile/settings" className="w-12 h-12 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center text-midnight-fjord active:scale-95 transition-transform">
-            <Settings className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={async () => { await supabase.auth.signOut(); router.push('/login'); }} 
+              className="w-12 h-12 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center text-rose-500 active:scale-95 transition-transform"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+            <Link href="/profile/settings" className="w-12 h-12 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center text-midnight-fjord active:scale-95 transition-transform">
+              <Settings className="w-5 h-5" />
+            </Link>
+          </div>
         </section>
 
         {/* 2. Sektion: „Mein Vibe“ (KI-Präferenzen) */}
