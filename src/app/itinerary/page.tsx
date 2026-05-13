@@ -281,7 +281,7 @@ export default function ItineraryPage() {
   };
 
   const handleSaveItem = async () => {
-    if (!userId || (loading && !currentTrip)) return;
+    if (!userId || !currentTrip || !newTitle) return;
     setIsSaving(true);
     const start_time = `${newStartDate}T${newStartTime}:00`;
     const end_time = `${newEndDate}T${newEndTime}:00`;
