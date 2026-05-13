@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopAppBar from '@/components/TopAppBar';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Globe, Bell, Ruler, Brain, Trash2, LogOut, ChevronRight, Check } from 'lucide-react';
+import { Loader2, Globe, Bell, Ruler, Brain, Trash2, LogOut, ChevronRight, Check, MapPin } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
@@ -22,6 +22,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [language, setLanguage] = useState('de-DE');
+  const [homeAddress, setHomeAddress] = useState('');
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
@@ -55,15 +56,33 @@ export default function SettingsPage() {
     try {
       const { data } = await supabase
         .from('profiles')
-        .select('language')
+        .select('language, home_address')
         .eq('id', userId)
         .single();
       
-      if (data) setLanguage(data.language || 'de-DE');
+      if (data) {
+        setLanguage(data.language || 'de-DE');
+        setHomeAddress(data.home_address || '');
+      }
     } catch (err) {
       console.error("Settings fetch error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddressBlur = async () => {
+    if (!userId) return;
+    setSaving(true);
+    try {
+      await supabase
+        .from('profiles')
+        .update({ home_address: homeAddress.trim() })
+        .eq('id', userId);
+    } catch (err) {
+      console.error("Address update error:", err);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -133,6 +152,29 @@ export default function SettingsPage() {
               <div className="text-right">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Zimmer</p>
                 <p className="font-bold text-sm text-midnight-fjord">304</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Sektion: Persönliches (Home Address) */}
+        <section>
+          <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 pl-2">Persönliches</h2>
+          <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-midnight-fjord mt-1">
+                <MapPin className="w-5 h-5 text-slate-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Heimatadresse</p>
+                <textarea
+                  value={homeAddress}
+                  onChange={(e) => setHomeAddress(e.target.value)}
+                  onBlur={handleAddressBlur}
+                  rows={2}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-medium text-midnight-fjord focus:outline-none focus:ring-2 focus:ring-glacier-mint/50 transition-all resize-none placeholder:text-slate-300"
+                  placeholder="Z.B. Musterstraße 1, 10115 Berlin"
+                />
               </div>
             </div>
           </div>

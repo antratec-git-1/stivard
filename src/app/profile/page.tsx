@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [fullName, setFullName] = useState('');
   const [activeVibes, setActiveVibes] = useState<Set<string>>(new Set());
   const [dislikes, setDislikes] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
@@ -68,6 +69,7 @@ export default function ProfilePage() {
         setProfile(data);
         setActiveVibes(new Set(data.vibes || []));
         setDislikes(data.dislikes || '');
+        setFullName(data.full_name || '');
       }
     } catch (err) {
       console.error("Profile fetch error:", err);
@@ -133,9 +135,14 @@ export default function ProfilePage() {
               />
             </div>
             <div>
-              <h1 className="font-bold text-2xl tracking-tight text-midnight-fjord">
-                {profile?.full_name || "Alexander"}
-              </h1>
+              <input 
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                onBlur={() => updateProfileField({ full_name: fullName.trim() })}
+                className="font-bold text-2xl tracking-tight text-midnight-fjord bg-transparent border-none p-0 focus:ring-0 focus:outline-none w-full placeholder:text-slate-300"
+                placeholder="Dein Name..."
+              />
               <span className={`inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${location?.isHotelContext ? 'bg-glacier-mint text-midnight-fjord' : 'bg-midnight-fjord text-white'}`}>
                 {badgeText}
               </span>
