@@ -10,8 +10,8 @@ import {
   ArrowDownLeft, ArrowUpRight, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
 import { searchViatorAction, getViatorProductLocationAction } from '@/app/test-viator/actions';
+import { useRouter } from 'next/navigation';
 
-const ALEXANDER_ID = '00000000-0000-0000-0000-000000000001';
 const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 type ViewMode = 'list' | 'grid';
@@ -182,14 +182,37 @@ export default function ItineraryPage() {
   const [viatorError, setViatorError] = useState<string | null>(null);
   const [lastSearchTerm, setLastSearchTerm] = useState<string>('');
   const [isFetchingLocation, setIsFetchingLocation] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
 
-  useEffect(() => { fetchTrips(); }, []);
-  useEffect(() => { if (currentTrip) fetchItinerary(); }, [currentTrip]);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setUserId(session.user.id);
+      }
+    };
+    
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) router.push('/login');
+      else setUserId(session.user.id);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  useEffect(() => { if (userId) fetchTrips(); }, [userId]);
+  useEffect(() => { if (currentTrip && userId) fetchItinerary(); }, [currentTrip, userId]);
 
   const fetchTrips = async () => {
+    if (!userId) return;
     setLoading(true);
     try {
-      const { data } = await supabase.from('trips').select('*').eq('user_id', ALEXANDER_ID).order('created_at', { ascending: false });
+      const { data } = await supabase.from('trips').select('*').eq('user_id', userId).order('created_at', { ascending: false });
       if (data) { setTrips(data); if (data.length > 0 && (!currentTrip || !data.find(t => t.id === currentTrip.id))) setCurrentTrip(data[0]); else if (data.length === 0) setCurrentTrip(null); }
     } finally { setLoading(false); }
   };
@@ -204,9 +227,9 @@ export default function ItineraryPage() {
   };
 
   const handleCreateTrip = async () => {
-    if (!newTripName.trim()) return;
+    if (!newTripName.trim() || !userId) return;
     setIsSaving(true);
-    const newTrip = { user_id: ALEXANDER_ID, name: newTripName.trim(), start_date: new Date().toISOString(), end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), status: 'planned' };
+    const newTrip = { user_id: userId, name: newTripName.trim(), start_date: new Date().toISOString(), end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), status: 'planned' };
     try {
       const { data } = await supabase.from('trips').insert([newTrip]).select();
       if (data && data.length > 0) { await fetchTrips(); setCurrentTrip(data[0]); setNewTripName(''); setIsNewTripFormOpen(false); setIsTripPickerOpen(false); }
@@ -258,14 +281,14 @@ export default function ItineraryPage() {
   };
 
   const handleSaveItem = async () => {
-    if (!newTitle || !currentTrip) return;
+    if (!userId || (loading && !currentTrip)) return;
     setIsSaving(true);
     const start_time = `${newStartDate}T${newStartTime}:00`;
     const end_time = `${newEndDate}T${newEndTime}:00`;
     let category: any = mainCategory;
     if (mainCategory === 'transport') category = (subCategory === 'car' || subCategory === 'plane' || subCategory === 'train') ? 'transport' : subCategory;
     const itemData = {
-      user_id: ALEXANDER_ID, trip_id: currentTrip.id, type: 'booked', category, title: newTitle, description: mainCategory === 'car_rental' ? 'Mietwagen' : mainCategory === 'hotel' ? 'Aufenthalt' : 'Logistik / Event',
+      user_id: userId, trip_id: currentTrip.id, type: 'booked', category, title: newTitle, description: mainCategory === 'car_rental' ? 'Mietwagen' : mainCategory === 'hotel' ? 'Aufenthalt' : 'Logistik / Event',
       start_time, end_time, status: 'confirmed', start_location_name: startLocation.name, start_location_lat: startLocation.lat, start_location_lng: startLocation.lng,
       end_location_name: (mainCategory === 'transport' && ['car','plane','train'].includes(subCategory)) ? endLocation.name : null,
       end_location_lat: (mainCategory === 'transport' && ['car','plane','train'].includes(subCategory)) ? endLocation.lat : null,
@@ -351,6 +374,15 @@ export default function ItineraryPage() {
   const activeColumnCount = [showHotel, showCar, showOther].filter(Boolean).length || 1;
   const gridColsClass = activeColumnCount === 3 ? 'grid-cols-3' : activeColumnCount === 2 ? 'grid-cols-2' : 'grid-cols-1';
   const showEndLocationField = (mainCategory === 'transport' && ['car', 'plane', 'train'].includes(subCategory));
+
+  if (!userId) {
+    return (
+      <div className="min-h-screen bg-[#F5F7F5] flex flex-col items-center justify-center p-6">
+        <Loader2 className="w-8 h-8 text-glacier-mint animate-spin mb-4" />
+        <p className="text-midnight-fjord font-bold text-sm">Authentifiziere...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-inter antialiased overflow-x-hidden">
