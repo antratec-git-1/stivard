@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
 import TopAppBar from '@/components/TopAppBar';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Globe, Bell, Ruler, Brain, Trash2, LogOut, ChevronRight, Check, MapPin } from 'lucide-react';
+
+const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const LANGUAGES = [
   { code: 'de-DE', label: 'Deutsch', flag: '🇩🇪' },
@@ -13,6 +16,90 @@ const LANGUAGES = [
   { code: 'sv-SE', label: 'Svenska', flag: '🇸🇪' },
   { code: 'nb-NO', label: 'Norsk', flag: '🇳🇴' },
 ];
+
+function useGoogleMaps() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    if ((window as any).google?.maps) { setIsLoaded(true); return; }
+    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+      const checkLoaded = setInterval(() => { if ((window as any).google?.maps) { setIsLoaded(true); clearInterval(checkLoaded); } }, 100);
+      return () => clearInterval(checkLoaded);
+    }
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+    script.async = true; script.defer = true;
+    script.onload = () => setIsLoaded(true);
+    document.head.appendChild(script);
+  }, []);
+  return isLoaded;
+}
+
+function LocationAutocomplete({ label, value, onChange, placeholder, icon: Icon, isLoaded }: any) {
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const autocompleteService = useRef<any>(null);
+  const placesService = useRef<any>(null);
+
+  useEffect(() => {
+    if (isLoaded && !autocompleteService.current && (window as any).google?.maps?.places) {
+      autocompleteService.current = new (window as any).google.maps.places.AutocompleteService();
+      const dummyElement = document.createElement('div');
+      placesService.current = new (window as any).google.maps.places.PlacesService(dummyElement);
+    }
+  }, [isLoaded]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => { if (containerRef.current && !containerRef.current.contains(e.target as Node)) setIsOpen(false); };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearch = (query: string) => {
+    onChange({ name: query });
+    if (!isLoaded || query.length < 3 || !autocompleteService.current) { setSuggestions([]); return; }
+    autocompleteService.current.getPlacePredictions({ input: query, language: 'de' }, (predictions: any) => { if (predictions) { setSuggestions(predictions); setIsOpen(true); } });
+  };
+
+  const handleSelect = (prediction: any) => {
+    setIsOpen(false);
+    if (!placesService.current) return;
+    placesService.current.getDetails({ placeId: prediction.place_id, fields: ['name', 'formatted_address', 'geometry', 'address_components'] }, (result: any) => {
+      if (result) {
+        const cityComp = result.address_components?.find((c: any) => c.types.includes('locality'));
+        const countryComp = result.address_components?.find((c: any) => c.types.includes('country'));
+        const cityName = cityComp ? cityComp.long_name : '';
+        const countryName = countryComp ? countryComp.long_name : '';
+        let fullName = result.name;
+        if (cityName && !fullName.includes(cityName)) fullName += `, ${cityName}`;
+        if (countryName && !fullName.includes(countryName)) fullName += `, ${countryName}`;
+        onChange({ name: fullName || result.formatted_address, lat: result.geometry?.location?.lat(), lng: result.geometry?.location?.lng(), address: result.formatted_address });
+      }
+    });
+  };
+
+  return (
+    <div className="space-y-1 relative" ref={containerRef}>
+      {label && <label className="text-[10px] font-black text-slate-300 uppercase tracking-widest ml-1">{label}</label>}
+      <div className="relative group">
+        <input type="text" value={value?.name || ''} onChange={(e) => handleSearch(e.target.value)} onFocus={() => suggestions.length > 0 && setIsOpen(true)} onBlur={() => setTimeout(() => setIsOpen(false), 200)} placeholder={isLoaded ? placeholder : 'Google Maps lädt...'} className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 pl-10 text-sm font-medium text-midnight-fjord outline-none focus:ring-2 focus:ring-glacier-mint/50 transition-all placeholder:text-slate-300" />
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      </div>
+      <AnimatePresence>
+        {isOpen && suggestions.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="absolute z-[100] left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden max-h-[200px] overflow-y-auto no-scrollbar">
+            {suggestions.map((s: any) => (
+              <button key={s.place_id} onMouseDown={() => handleSelect(s)} type="button" className="w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors flex items-center gap-3 group">
+                <MapPin className="w-4 h-4 text-slate-300 group-hover:text-glacier-mint transition-colors" />
+                <div className="flex flex-col"><span className="text-xs font-bold text-midnight-fjord truncate">{s.structured_formatting.main_text}</span><span className="text-[10px] text-slate-400 truncate">{s.structured_formatting.secondary_text}</span></div>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
@@ -22,10 +109,11 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [language, setLanguage] = useState('de-DE');
-  const [homeAddress, setHomeAddress] = useState('');
+  const [homeAddress, setHomeAddress] = useState<any>({ name: '' });
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
+  const isMapsLoaded = useGoogleMaps();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -50,7 +138,7 @@ export default function SettingsPage() {
     if (userId) fetchSettings();
   }, [userId]);
 
-  const fetchSettings = async () => {
+  async function fetchSettings() {
     if (!userId) return;
     setLoading(true);
     try {
@@ -62,14 +150,14 @@ export default function SettingsPage() {
       
       if (data) {
         setLanguage(data.language || 'de-DE');
-        setHomeAddress(data.home_address || '');
+        setHomeAddress({ name: data.home_address || '' });
       }
     } catch (err) {
       console.error("Settings fetch error:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleAddressBlur = async () => {
     if (!userId) return;
@@ -77,7 +165,7 @@ export default function SettingsPage() {
     try {
       await supabase
         .from('profiles')
-        .update({ home_address: homeAddress.trim() })
+        .update({ home_address: homeAddress.name?.trim() || '' })
         .eq('id', userId);
     } catch (err) {
       console.error("Address update error:", err);
@@ -161,19 +249,15 @@ export default function SettingsPage() {
         <section>
           <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-3 pl-2">Persönliches</h2>
           <div className="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-50 p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 text-midnight-fjord mt-1">
-                <MapPin className="w-5 h-5 text-slate-400" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Heimatadresse</p>
-                <textarea
-                  value={homeAddress}
-                  onChange={(e) => setHomeAddress(e.target.value)}
-                  onBlur={handleAddressBlur}
-                  rows={2}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm font-medium text-midnight-fjord focus:outline-none focus:ring-2 focus:ring-glacier-mint/50 transition-all resize-none placeholder:text-slate-300"
-                  placeholder="Z.B. Musterstraße 1, 10115 Berlin"
+            <div className="flex flex-col gap-2">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Heimatadresse</p>
+              <div onBlur={handleAddressBlur} className="w-full">
+                <LocationAutocomplete 
+                  value={homeAddress} 
+                  onChange={setHomeAddress} 
+                  placeholder="Z.B. Musterstraße 1, 10115 Berlin" 
+                  icon={MapPin} 
+                  isLoaded={isMapsLoaded} 
                 />
               </div>
             </div>

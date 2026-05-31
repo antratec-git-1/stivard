@@ -72,13 +72,13 @@ export default function ViatorTestPage() {
     fetchTrips();
   }, []);
 
-  const fetchTrips = async () => {
+  async function fetchTrips() {
     const { data } = await supabase.from('trips').select('id, name').eq('user_id', ALEXANDER_ID);
     if (data && data.length > 0) {
       setTrips(data);
       setSelectedTripId(data[0].id);
     }
-  };
+  }
 
   const handleTestConnection = async () => {
     setConnStatus('checking');

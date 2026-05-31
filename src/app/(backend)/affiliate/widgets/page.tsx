@@ -26,7 +26,7 @@ export default function WidgetsManagerPage() {
     fetchWidgets();
   }, []);
 
-  const fetchWidgets = async () => {
+  async function fetchWidgets() {
     setLoading(true);
     if (!supabase) return;
     const { data, error } = await supabase
@@ -40,7 +40,7 @@ export default function WidgetsManagerPage() {
       setWidgets(data || []);
     }
     setLoading(false);
-  };
+  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();

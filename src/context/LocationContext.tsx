@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
 
 // Stockholm coordinates as our "Nordic Fjord Hotel" base
 const HOTEL_COORDS = { lat: 59.3293, lon: 18.0686 };
@@ -48,6 +48,12 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const [location, setLocation] = useState<LocationState | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const locationRef = useRef<LocationState | null>(null);
+
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
 
   const performApiFetches = async (lat: number, lon: number) => {
     setLoading(true);
@@ -104,10 +110,11 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+        const currentLocation = locationRef.current;
         
         // If we already have a location, check the delta distance
-        if (location) {
-          const delta = getDistance(location.lat, location.lon, latitude, longitude);
+        if (currentLocation) {
+          const delta = getDistance(currentLocation.lat, currentLocation.lon, latitude, longitude);
           if (delta > DISTANCE_THRESHOLD_METERS) {
             console.log(`Location changed by ${Math.round(delta)}m. Updating...`);
             performApiFetches(latitude, longitude);
@@ -125,12 +132,15 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       },
       { timeout: 5000 }
     );
-  }, [location]);
+  }, []);
 
   // Initial fetch
   useEffect(() => {
-    checkLocation();
-  }, []); // Run once on mount
+    const timer = setTimeout(() => {
+      checkLocation();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [checkLocation]); // Run once on mount
 
   // On-Focus listener
   useEffect(() => {

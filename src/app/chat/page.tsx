@@ -24,6 +24,14 @@ const INITIAL_MESSAGE: Message = {
   content: 'God dag! Ich bin Stewart, dein digitaler Concierge. Wie darf ich deinen Aufenthalt heute noch exklusiver gestalten?',
 };
 
+function generateUniqueId() {
+  return Date.now().toString();
+}
+
+function getCurrentTimestamp() {
+  return Date.now();
+}
+
 export default function ChatPage() {
   const { location } = useLocation();
   const [input, setInput] = useState('');
@@ -44,30 +52,36 @@ export default function ChatPage() {
     if (savedChats) {
       try {
         const parsedChats = JSON.parse(savedChats);
-        setChats(parsedChats);
-        
-        if (lastChatId) {
-          const lastChat = parsedChats.find((c: Chat) => c.id === lastChatId);
-          if (lastChat) {
-            setActiveChatId(lastChatId);
-            setMessages(lastChat.messages);
+        setTimeout(() => {
+          setChats(parsedChats);
+          
+          if (lastChatId) {
+            const lastChat = parsedChats.find((c: Chat) => c.id === lastChatId);
+            if (lastChat) {
+              setActiveChatId(lastChatId);
+              setMessages(lastChat.messages);
+            } else {
+              // If last chat not found, start new
+              const newId = generateUniqueId();
+              setActiveChatId(newId);
+            }
           } else {
-            // If last chat not found, start new
-            const newId = Date.now().toString();
+            const newId = generateUniqueId();
             setActiveChatId(newId);
           }
-        } else {
-          const newId = Date.now().toString();
-          setActiveChatId(newId);
-        }
+          setIsLoaded(true);
+        }, 0);
       } catch (e) {
         console.error("Could not parse chat archive", e);
+        setTimeout(() => setIsLoaded(true), 0);
       }
     } else {
-      const newId = Date.now().toString();
-      setActiveChatId(newId);
+      const newId = generateUniqueId();
+      setTimeout(() => {
+        setActiveChatId(newId);
+        setIsLoaded(true);
+      }, 0);
     }
-    setIsLoaded(true);
   }, []);
 
   // 2. Save current chat state to archive
@@ -77,27 +91,31 @@ export default function ChatPage() {
     // Don't save empty chats (only initial message)
     if (messages.length <= 1) return;
 
-    const title = messages.find(m => m.role === 'user')?.content.substring(0, 30) + (messages.find(m => m.role === 'user')?.content.length! > 30 ? '...' : '') || 'Neuer Chat';
+    const userMsg = messages.find(m => m.role === 'user');
+    const userContent = userMsg ? userMsg.content : '';
+    const title = userContent ? (userContent.substring(0, 30) + (userContent.length > 30 ? '...' : '')) : 'Neuer Chat';
     
     const newChat: Chat = {
       id: activeChatId,
       title,
       messages,
-      updatedAt: Date.now()
+      updatedAt: getCurrentTimestamp()
     };
 
-    setChats(prev => {
-      const existingIndex = prev.findIndex(c => c.id === activeChatId);
-      let nextChats;
-      if (existingIndex >= 0) {
-        nextChats = [...prev];
-        nextChats[existingIndex] = newChat;
-      } else {
-        nextChats = [newChat, ...prev];
-      }
-      localStorage.setItem('stivard_chats_v1', JSON.stringify(nextChats));
-      return nextChats;
-    });
+    setTimeout(() => {
+      setChats(prev => {
+        const existingIndex = prev.findIndex(c => c.id === activeChatId);
+        let nextChats;
+        if (existingIndex >= 0) {
+          nextChats = [...prev];
+          nextChats[existingIndex] = newChat;
+        } else {
+          nextChats = [newChat, ...prev];
+        }
+        localStorage.setItem('stivard_chats_v1', JSON.stringify(nextChats));
+        return nextChats;
+      });
+    }, 0);
 
     localStorage.setItem('stivard_active_chat_id', activeChatId);
   }, [messages, activeChatId, isLoaded]);
@@ -113,7 +131,7 @@ export default function ChatPage() {
   }, [messages]);
 
   const startNewChat = () => {
-    const newId = Date.now().toString();
+    const newId = generateUniqueId();
     setActiveChatId(newId);
     setMessages([INITIAL_MESSAGE]);
     setIsArchiveOpen(false);

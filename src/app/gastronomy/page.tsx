@@ -43,7 +43,7 @@ export default function GastronomyPage() {
     loadRestaurants();
   }, []);
 
-  const loadRestaurants = async () => {
+  async function loadRestaurants() {
     setLoading(true);
     try {
       const res = await fetch(`/api/places?location=50.7753,6.0839&radius=1500&type=restaurant`);
@@ -70,7 +70,7 @@ export default function GastronomyPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleOpenDetails = async (resto: Restaurant) => {
     setSelectedResto(resto);

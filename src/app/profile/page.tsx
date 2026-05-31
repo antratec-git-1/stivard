@@ -55,7 +55,7 @@ export default function ProfilePage() {
     if (userId) fetchProfile();
   }, [userId]);
 
-  const fetchProfile = async () => {
+  async function fetchProfile() {
     if (!userId) return;
     setLoading(true);
     try {
@@ -76,7 +76,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const updateProfileField = async (fields: any) => {
     if (!userId) return;

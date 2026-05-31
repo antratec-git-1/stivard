@@ -34,7 +34,7 @@ export default function ExperiencesPage() {
   const [gems, setGems] = useState<Experience[]>([]);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     const onboarded = localStorage.getItem('stivard_exp_v8');
     if (!onboarded) setFirstVisit(true);
     
@@ -44,7 +44,7 @@ export default function ExperiencesPage() {
     loadExperiences();
   }, []);
 
-  const loadExperiences = async () => {
+  async function loadExperiences() {
     setLoading(true);
     try {
       const res = await fetch(`/api/places?location=50.7753,6.0839&radius=1500&type=tourist_attraction`);
@@ -74,7 +74,7 @@ export default function ExperiencesPage() {
       setCards(SIMULATED_GOOGLE_RESULTS);
       setLoading(false);
     }
-  };
+  }
 
   const handleOpenDetails = async (exp: Experience) => {
     setSelectedExp(exp);

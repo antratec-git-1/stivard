@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Loader2, Bed, Compass, Utensils, Car, Plus, Calendar as CalendarIcon, 
-  List, Sparkles, MapPin, Clock, X, Plane, Train, Check, Trash2, 
+  List, Sparkles, MapPin, Key, Clock, X, Plane, Train, Check, Trash2, 
   ChevronDown, Globe, AlertTriangle, Search, Navigation, ArrowRight,
   ArrowDownLeft, ArrowUpRight, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
@@ -208,23 +208,23 @@ export default function ItineraryPage() {
   useEffect(() => { if (userId) fetchTrips(); }, [userId]);
   useEffect(() => { if (currentTrip && userId) fetchItinerary(); }, [currentTrip, userId]);
 
-  const fetchTrips = async () => {
+  async function fetchTrips() {
     if (!userId) return;
     setLoading(true);
     try {
       const { data } = await supabase.from('trips').select('*').eq('user_id', userId).order('created_at', { ascending: false });
       if (data) { setTrips(data); if (data.length > 0 && (!currentTrip || !data.find(t => t.id === currentTrip.id))) setCurrentTrip(data[0]); else if (data.length === 0) setCurrentTrip(null); }
     } finally { setLoading(false); }
-  };
+  }
 
-  const fetchItinerary = async () => {
+  async function fetchItinerary() {
     if (!currentTrip) return;
     setLoading(true);
     try {
       const { data } = await supabase.from('itinerary_items').select('*').eq('trip_id', currentTrip.id).order('start_time', { ascending: true });
       if (data) setItems(data);
     } finally { setLoading(false); }
-  };
+  }
 
   const handleCreateTrip = async () => {
     if (!newTripName.trim() || !userId) return;
@@ -375,6 +375,19 @@ export default function ItineraryPage() {
   const gridColsClass = activeColumnCount === 3 ? 'grid-cols-3' : activeColumnCount === 2 ? 'grid-cols-2' : 'grid-cols-1';
   const showEndLocationField = (mainCategory === 'transport' && ['car', 'plane', 'train'].includes(subCategory));
 
+  const gridStyle = useMemo(() => {
+    const cols = [];
+    if (showHotel) cols.push('56px');
+    if (showCar) cols.push('56px');
+    if (showOther) cols.push('1fr');
+    if (cols.length === 0) cols.push('1fr');
+    return {
+      display: 'grid',
+      gridTemplateColumns: cols.join(' '),
+      columnGap: '1rem',
+    };
+  }, [showHotel, showCar, showOther]);
+
   if (!userId) {
     return (
       <div className="min-h-screen bg-[#F5F7F5] flex flex-col items-center justify-center p-6">
@@ -386,85 +399,332 @@ export default function ItineraryPage() {
 
   return (
     <div className="bg-[#F9FAFB] text-[#111827] min-h-screen pb-32 font-inter antialiased overflow-x-hidden">
-      <header className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="cursor-pointer group" onClick={() => setIsTripPickerOpen(true)}>
-            <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Selected Journey <ChevronDown className="w-3 h-3" /></div>
-            <h1 className="text-xl font-bold text-midnight-fjord tracking-tight">{currentTrip?.name || 'KEINE REISE'}</h1>
+      <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-100 px-6 py-5 shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
+        <div className="max-w-5xl mx-auto">
+          {/* Top row */}
+          <div className="flex items-center justify-between">
+            <div className="cursor-pointer group flex flex-col" onClick={() => setIsTripPickerOpen(true)}>
+              <div className="flex items-center gap-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                SELECTED JOURNEY <ChevronDown className="w-3 h-3 text-slate-400" />
+              </div>
+              <h1 className="text-3xl font-black text-[#041627] tracking-tight lowercase">
+                {currentTrip?.name || 'keine reise'}
+              </h1>
+            </div>
+            {currentTrip && (
+              <button 
+                onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')} 
+                className={`w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm hover:bg-slate-50 transition-all ${
+                  viewMode === 'grid' ? 'border-[#00aa6c] text-[#00aa6c]' : 'text-[#041627]'
+                }`}
+              >
+                <CalendarIcon className="w-5 h-5 stroke-[2px]" />
+              </button>
+            )}
           </div>
+          
+          {/* Bottom row (filters) */}
           {currentTrip && (
-            <div className="flex items-center gap-4">
-              <div className="bg-slate-100 p-1 rounded-full flex gap-1 shadow-inner">
-                 <button onClick={() => setShowHotel(!showHotel)} className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all ${showHotel ? 'bg-white text-midnight-fjord shadow-sm' : 'text-slate-400 opacity-60'}`}><Bed className="w-4 h-4" /><span className="text-[10px] font-black uppercase">Stay</span></button>
-                 <button onClick={() => setShowCar(!showCar)} className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all ${showCar ? 'bg-white text-midnight-fjord shadow-sm' : 'text-slate-400 opacity-60'}`}><Car className="w-4 h-4" /><span className="text-[10px] font-black uppercase">Car</span></button>
-                 <button onClick={() => setShowOther(!showOther)} className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all ${showOther ? 'bg-white text-midnight-fjord shadow-sm' : 'text-slate-400 opacity-60'}`}><Compass className="w-4 h-4" /><span className="text-[10px] font-black uppercase">Logistics</span></button>
-              </div>
-              <div className="bg-slate-100 p-1 rounded-full flex relative w-24 h-9">
-                <motion.div className="absolute bg-white rounded-full shadow-sm h-7" animate={{ x: viewMode === 'list' ? 0 : 44 }} style={{ width: 'calc(50% - 4px)' }} />
-                <button onClick={() => setViewMode('list')} className={`flex-1 flex items-center justify-center relative z-10 ${viewMode === 'list' ? 'text-midnight-fjord' : 'text-slate-400'}`}><List className="w-3.5 h-3.5" /></button>
-                <button onClick={() => setViewMode('grid')} className={`flex-1 flex items-center justify-center relative z-10 ${viewMode === 'grid' ? 'text-midnight-fjord' : 'text-slate-400'}`}><CalendarIcon className="w-3.5 h-3.5" /></button>
-              </div>
+            <div className="flex gap-3 justify-between w-full mt-5">
+              <button 
+                onClick={() => setShowHotel(!showHotel)} 
+                className={`flex-1 py-3 px-4 rounded-full flex items-center justify-center gap-2 transition-all font-extrabold text-[10px] tracking-wider ${
+                  showHotel 
+                    ? 'bg-[#041627] text-white shadow-sm' 
+                    : 'bg-slate-50 text-slate-400 border border-slate-100'
+                }`}
+              >
+                <Bed className={`w-4 h-4 ${showHotel ? 'text-teal-400' : 'text-slate-400'}`} />
+                <span>STAY</span>
+              </button>
+              <button 
+                onClick={() => setShowCar(!showCar)} 
+                className={`flex-1 py-3 px-4 rounded-full flex items-center justify-center gap-2 transition-all font-extrabold text-[10px] tracking-wider ${
+                  showCar 
+                    ? 'bg-[#041627] text-white shadow-sm' 
+                    : 'bg-slate-50 text-slate-400 border border-slate-100'
+                }`}
+              >
+                <Car className={`w-4 h-4 ${showCar ? 'text-teal-400' : 'text-slate-400'}`} />
+                <span>CAR</span>
+              </button>
+              <button 
+                onClick={() => setShowOther(!showOther)} 
+                className={`flex-1 py-3 px-4 rounded-full flex items-center justify-center gap-2 transition-all font-extrabold text-[10px] tracking-wider ${
+                  showOther 
+                    ? 'bg-[#041627] text-white shadow-sm' 
+                    : 'bg-slate-50 text-slate-400 border border-slate-100'
+                }`}
+              >
+                <Compass className={`w-4 h-4 ${showOther ? 'text-teal-400' : 'text-slate-400'}`} />
+                <span>LOGISTICS</span>
+              </button>
             </div>
           )}
         </div>
       </header>
 
-      <main className="pt-28 px-4 max-w-5xl mx-auto">
+      <main className="pt-44 px-4 max-w-5xl mx-auto">
         {!currentTrip ? (<div className="py-40 text-center"><div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner"><Globe className="w-10 h-10 text-slate-200" /></div><h2 className="text-2xl font-black text-midnight-fjord mb-4">Bereit für das nächste Abenteuer?</h2><p className="text-slate-400 mb-10 max-w-xs mx-auto">Klicke oben links auf den Namen, um eine neue Reise anzulegen.</p><button onClick={() => setIsTripPickerOpen(true)} className="px-10 py-5 bg-midnight-fjord text-white rounded-full font-bold shadow-xl">REISE STARTEN</button></div>) : (
           <AnimatePresence mode="wait">
             {viewMode === 'list' ? (
-              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
-                <div className={`grid ${gridColsClass} gap-6 mb-4 px-2 text-center text-[9px] font-black text-slate-300 uppercase tracking-widest`}>{showHotel && <div>Aufenthalt</div>}{showCar && <div>Mietwagen</div>}{showOther && <div>Logistik & Aktivitäten</div>}</div>
-                {Object.keys(groupedItems).sort((a,b) => new Date(a).getTime() - new Date(b).getTime()).map(dateKey => {
-                  const dayItems = groupedItems[dateKey] as ExplodedItem[];
-                  const hotelForDay = dayItems.find(i => i.category === 'hotel');
-                  const hotelLocation = hotelForDay ? { name: hotelForDay.start_location_name, lat: hotelForDay.start_location_lat, lng: hotelForDay.start_location_lng } : null;
-                  return (
-                    <section key={dateKey} className="relative">
-                      <div className="flex items-center justify-center gap-4 mb-8 sticky top-24 z-20">
-                        <div className="h-[1px] flex-1 bg-slate-100" />
-                        <div className="flex items-center gap-3 bg-[#F9FAFB]/90 backdrop-blur-sm px-6 py-2 rounded-full border border-slate-100 shadow-sm">
-                          <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">{new Date(dateKey).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}</h2>
-                          <button onClick={() => openAddModal(dateKey, hotelLocation)} className="px-3 py-1 bg-glacier-mint/10 text-midnight-fjord rounded-full text-[8px] font-black uppercase tracking-widest hover:bg-glacier-mint/20 transition-all flex items-center gap-1">
-                            <Plus className="w-2.5 h-2.5 text-glacier-mint" /> Neues Event
-                          </button>
+              <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                <div 
+                  style={gridStyle} 
+                  className="mb-4 px-2 text-[10px] font-extrabold text-[#768494] uppercase tracking-widest"
+                >
+                  {showHotel && <div className="text-center">STAY</div>}
+                  {showCar && <div className="text-center">CAR</div>}
+                  {showOther && <div className="pl-2">EVENTS & TRANSPORT</div>}
+                </div>
+
+                <div 
+                  className="grid gap-x-4 gap-y-0 relative"
+                  style={{ gridTemplateColumns: gridStyle.gridTemplateColumns }}
+                >
+                  {Object.keys(groupedItems).sort((a,b) => new Date(a).getTime() - new Date(b).getTime()).map(dateKey => {
+                    const dayItems = groupedItems[dateKey] as ExplodedItem[];
+                    const hotelForDay = dayItems.find(i => i.category === 'hotel');
+                    const hotelLocation = hotelForDay ? { name: hotelForDay.start_location_name, lat: hotelForDay.start_location_lat, lng: hotelForDay.start_location_lng } : null;
+                    
+                    const hotelItem = dayItems.find(i => i.category === 'hotel');
+                    const carItem = dayItems.find(i => i.category === 'car_rental');
+                    
+                    return (
+                      <React.Fragment key={dateKey}>
+                        
+                        {/* --- DATE ROW --- */}
+                        
+                        {/* Column 1 Date Rail segment */}
+                        {showHotel && (
+                          <div className="relative flex justify-center py-6 min-h-[48px]">
+                            <div className={`absolute top-0 bottom-0 w-[3px] ${hotelItem ? 'bg-[#00f3be]' : 'bg-slate-200/50'}`} />
+                          </div>
+                        )}
+                        
+                        {/* Column 2 Date Rail segment */}
+                        {showCar && (
+                          <div className="relative flex justify-center py-6 min-h-[48px]">
+                            <div className={`absolute top-0 bottom-0 w-[3px] ${carItem ? 'bg-[#00f3be]' : 'bg-slate-200/50'}`} />
+                          </div>
+                        )}
+                        
+                        {/* Date Separator Pill in Column 3 */}
+                        <div className="relative flex items-center justify-end py-6 col-span-1">
+                          <div className="absolute left-0 right-0 h-[1.5px] bg-slate-200/60 z-0" />
+                          <div className="relative z-10 flex items-center gap-2 bg-[#041627] text-white px-4 py-2 rounded-full shadow-md font-bold text-xs select-none">
+                            <span>
+                              {new Date(dateKey).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase()}
+                            </span>
+                            <button 
+                              onClick={() => openAddModal(dateKey, hotelLocation)} 
+                              className="w-5 h-5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition-all flex items-center justify-center text-teal-400"
+                            >
+                              <Plus className="w-3.5 h-3.5 stroke-[3px]" />
+                            </button>
+                          </div>
                         </div>
-                        <div className="h-[1px] flex-1 bg-slate-100" />
-                      </div>
-                      <div className={`grid ${gridColsClass} gap-6 items-stretch`}>
-                        {showHotel && <div className="flex flex-col gap-3">{dayItems.filter(i => i.category === 'hotel').map(item => (<div key={item.fragment_id} onClick={() => openEditModal(item)} className={`rounded-[24px] p-4 shadow-sm border bg-white border-slate-100 min-h-[160px] cursor-pointer hover:border-glacier-mint transition-all ${!item.is_first_fragment ? 'rounded-t-none border-t-0 opacity-80' : ''} ${!item.is_last_fragment ? 'rounded-b-none border-b-0 shadow-none' : ''}`}><h3 className="font-bold text-[11px] mb-1 leading-tight">{item.title}</h3><div className="flex items-start gap-1 text-[8px] text-slate-400 mt-2"><MapPin className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" /><span className="leading-relaxed">{item.start_location_name || 'Kein Ort'}</span></div></div>))}</div>}
-                        {showCar && <div className="flex flex-col gap-3">{dayItems.filter(i => i.category === 'car_rental').map(item => (<div key={item.fragment_id} onClick={() => openEditModal(item)} className={`rounded-[24px] p-4 shadow-sm border bg-white border-glacier-mint/20 min-h-[160px] cursor-pointer hover:border-glacier-mint transition-all ${!item.is_first_fragment ? 'rounded-t-none border-t-0 opacity-80' : ''} ${!item.is_last_fragment ? 'rounded-b-none border-b-0 shadow-none' : ''}`}><h3 className="font-bold text-[11px] mb-1 leading-tight">{item.title}</h3><div className="flex items-start gap-1 text-[8px] text-slate-400 mt-2"><MapPin className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" /><span className="leading-relaxed">{item.start_location_name || 'Mietstation'}</span></div></div>))}</div>}
-                        {showOther && <div className="flex flex-col gap-3">{dayItems.filter(i => !['hotel', 'car_rental'].includes(i.category)).map(item => {
-                          const isTransport = item.category === 'transport';
-                          const labelPrefix = isTransport ? (item.is_first_fragment ? 'Abfahrt: ' : 'Ankunft: ') : '';
-                          const locName = (isTransport && !item.is_first_fragment) ? (item.end_location_name || item.start_location_name) : item.start_location_name;
-                          const secondLoc = (isTransport && item.is_first_fragment) ? item.end_location_name : null;
-                          return (
-                            <div key={item.fragment_id} onClick={() => openEditModal(item)} className="rounded-[20px] p-4 shadow-sm border bg-white border-slate-100 flex flex-col justify-between min-h-[80px] cursor-pointer hover:border-glacier-mint transition-all">
-                              <h3 className="font-bold text-[11px] mb-2 leading-tight">{item.title}</h3>
-                              <div className="space-y-2">
-                                <div className="flex items-start gap-1 text-[8px] text-midnight-fjord font-medium">
-                                  {item.is_first_fragment ? <ArrowUpRight className="w-2.5 h-2.5 text-glacier-mint mt-0.5 flex-shrink-0" /> : <ArrowDownLeft className="w-2.5 h-2.5 text-indigo-400 mt-0.5 flex-shrink-0" />}
-                                  <div className="flex flex-col gap-1">
-                                    <span className="leading-tight"><span className="opacity-50 font-normal">{labelPrefix}</span>{locName || 'Ort wählen'}</span>
-                                    {secondLoc && <div className="flex items-center gap-1 mt-1 text-slate-400"><ArrowRight className="w-2 h-2" />{secondLoc}</div>}
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-1 opacity-40 text-[8px]"><Clock className="w-2 h-2" />{item.display_start.split('T')[1].substring(0,5)}</div>
+                        
+                        {/* --- CONTENT ROW --- */}
+                        
+                        {/* Column 1 Content: Stay */}
+                        {showHotel && (
+                          <div className="relative flex justify-center py-2 min-h-[140px]">
+                            <div className={`absolute top-0 bottom-0 w-[3px] ${hotelItem ? 'bg-[#00f3be]' : 'bg-slate-200/50'}`} />
+                            {hotelItem ? (
+                              <div 
+                                onClick={() => openEditModal(hotelItem)} 
+                                className={`relative z-10 w-full rounded-[20px] bg-white border-2 border-[#00f3be] hover:border-teal-400 flex flex-col items-center justify-between py-6 px-1 cursor-pointer transition-all shadow-sm ${
+                                  !hotelItem.is_first_fragment ? 'border-t-0 rounded-t-none' : ''
+                                } ${
+                                  !hotelItem.is_last_fragment ? 'border-b-0 rounded-b-none' : ''
+                                }`}
+                              >
+                                {hotelItem.is_first_fragment ? (
+                                  <span 
+                                    className="text-[9px] font-black tracking-widest text-[#041627] select-none uppercase whitespace-nowrap [writing-mode:vertical-lr] rotate-180"
+                                  >
+                                    {hotelItem.title || 'AUFENTHALT'}
+                                  </span>
+                                ) : hotelItem.is_last_fragment ? (
+                                  <MapPin className="w-5 h-5 text-[#041627]" />
+                                ) : (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#00f3be]" />
+                                )}
                               </div>
-                            </div>
-                          );
-                        })}</div>}
-                      </div>
-                    </section>
-                  );
-                })}
+                            ) : (
+                              <div 
+                                className="relative z-10 w-full rounded-[20px] bg-white border border-dashed border-slate-200/80 flex flex-col items-center justify-center py-6 px-1 opacity-40"
+                              >
+                                <span 
+                                  className="text-[9px] font-black tracking-widest text-slate-350 select-none uppercase whitespace-nowrap [writing-mode:vertical-lr] rotate-180"
+                                >
+                                  AUFENTHALT
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Column 2 Content: Car */}
+                        {showCar && (
+                          <div className="relative flex justify-center py-2 min-h-[140px]">
+                            <div className={`absolute top-0 bottom-0 w-[3px] ${carItem ? 'bg-[#00f3be]' : 'bg-slate-200/50'}`} />
+                            {carItem ? (
+                              <div 
+                                onClick={() => openEditModal(carItem)} 
+                                className={`relative z-10 w-full rounded-[20px] bg-white border-2 border-[#00f3be] hover:border-teal-400 flex flex-col items-center justify-between py-6 px-1 cursor-pointer transition-all shadow-sm ${
+                                  !carItem.is_first_fragment ? 'border-t-0 rounded-t-none' : ''
+                                } ${
+                                  !carItem.is_last_fragment ? 'border-b-0 rounded-b-none' : ''
+                                }`}
+                              >
+                                {carItem.is_first_fragment ? (
+                                  <span 
+                                    className="text-[9px] font-black tracking-widest text-[#041627] select-none uppercase whitespace-nowrap [writing-mode:vertical-lr] rotate-180"
+                                  >
+                                    {carItem.title || 'MIETWAGEN'}
+                                  </span>
+                                ) : carItem.is_last_fragment ? (
+                                  <Key className="w-5 h-5 text-[#041627] rotate-90" />
+                                ) : (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#00f3be]" />
+                                )}
+                              </div>
+                            ) : (
+                              <div 
+                                className="relative z-10 w-full rounded-[20px] bg-white border border-dashed border-slate-200/80 flex flex-col items-center justify-center py-6 px-1 opacity-40"
+                              >
+                                <span 
+                                  className="text-[9px] font-black tracking-widest text-slate-350 select-none uppercase whitespace-nowrap [writing-mode:vertical-lr] rotate-180"
+                                >
+                                  MIETWAGEN
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Column 3 Content: Events & Transport */}
+                        {showOther ? (
+                          <div className="py-2 flex flex-col gap-3 min-h-[140px]">
+                            {dayItems.filter(i => !['hotel', 'car_rental'].includes(i.category)).map(item => {
+                              const isTransport = item.category === 'transport';
+                              
+                              if (isTransport) {
+                                const isDeparture = item.is_first_fragment;
+                                const startLoc = item.start_location_name || 'Ort wählen';
+                                const endLoc = item.end_location_name || '';
+                                
+                                const getTransportIcon = (title: string) => {
+                                  const t = title.toLowerCase();
+                                  if (t.includes('flug') || t.includes('flight') || t.includes('plane')) return Plane;
+                                  if (t.includes('zug') || t.includes('bahn') || t.includes('train')) return Train;
+                                  if (t.includes('taxi') || t.includes('cab') || t.includes('auto') || t.includes('uber') || t.includes('car')) return Car;
+                                  return Train; // default
+                                };
+                                const TransportIcon = getTransportIcon(item.title);
+                                
+                                return (
+                                  <div 
+                                    key={item.fragment_id} 
+                                    onClick={() => openEditModal(item)} 
+                                    className="rounded-[24px] p-5 shadow-sm border bg-white border-slate-100 flex flex-col justify-between min-h-[150px] cursor-pointer hover:border-emerald-500/30 hover:shadow-md transition-all text-left"
+                                  >
+                                    <div>
+                                      <div className="flex justify-between items-start mb-3 gap-2">
+                                        <h3 className="font-bold text-sm text-[#041627] leading-tight">{item.title}</h3>
+                                        <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-[#00aa6c] flex-shrink-0">
+                                          <TransportIcon className="w-4 h-4" />
+                                        </div>
+                                      </div>
+                                      
+                                      <div className="space-y-1.5 text-xs text-slate-500 font-semibold mb-4">
+                                        {isDeparture ? (
+                                          <>
+                                            <div><span className="text-slate-400 font-medium">Ab: </span>{startLoc}</div>
+                                            {endLoc && (
+                                              <div className="flex items-center gap-1.5 text-slate-400 font-medium">
+                                                → <span className="text-slate-500 font-semibold">{endLoc}</span>
+                                              </div>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <div><span className="text-slate-400 font-medium">Ankunft: </span>{endLoc || startLoc}</div>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-1.5 text-slate-405 text-xs font-semibold">
+                                      <Clock className="w-3.5 h-3.5 text-slate-350" />
+                                      <span className="text-[#041627] font-bold">{item.display_start.split('T')[1].substring(0, 5)}</span>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              
+                              // Else: Event/Activity Card
+                              const isFood = item.category === 'food' || item.title.toLowerCase().includes('essen') || item.title.toLowerCase().includes('restaurant');
+                              const isActivity = item.category === 'activity' || item.title.toLowerCase().includes('guruwalks') || item.title.toLowerCase().includes('tour');
+                              
+                              let imageUrl = '';
+                              if (isActivity) {
+                                imageUrl = 'https://images.unsplash.com/photo-1599946347371-68eb71b16afc?q=80&w=600';
+                              } else if (isFood) {
+                                imageUrl = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600';
+                              }
+                              
+                              return (
+                                <div 
+                                  key={item.fragment_id} 
+                                  onClick={() => openEditModal(item)} 
+                                  className="rounded-[24px] shadow-sm border bg-white border-slate-100 flex flex-col justify-between min-h-[120px] cursor-pointer hover:border-emerald-500/30 hover:shadow-md transition-all overflow-hidden text-left"
+                                >
+                                  <div className="p-5 flex-1 flex flex-col justify-between">
+                                    <div>
+                                      <h3 className="font-bold text-sm text-[#041627] mb-3 leading-snug">{item.title}</h3>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-1.5 text-[#00aa6c] text-xs font-extrabold">
+                                      <Clock className="w-3.5 h-3.5 text-[#00aa6c]" />
+                                      <span>{item.display_start.split('T')[1].substring(0, 5)}</span>
+                                    </div>
+                                  </div>
+                                  
+                                  {imageUrl && (
+                                    <div className="w-full h-32 overflow-hidden border-t border-slate-50">
+                                      <img 
+                                        src={imageUrl} 
+                                        alt={item.title}
+                                        className="w-full h-full object-cover" 
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div />
+                        )}
+                        
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
               </motion.div>
             ) : (<div className="p-20 text-center text-slate-300">Gitter-Logik wird verfeinert...</div>)}
           </AnimatePresence>
         )}
 
-        {currentTrip && <button onClick={() => openAddModal()} className="fixed bottom-32 left-1/2 -translate-x-1/2 w-16 h-16 bg-midnight-fjord text-white rounded-full shadow-2xl flex items-center justify-center z-50 hover:scale-110 active:scale-95 transition-all shadow-midnight-fjord/40 border-4 border-white/20"><Plus className="w-8 h-8" /></button>}
+        {currentTrip && (
+          <button 
+            onClick={() => openAddModal()} 
+            className="fixed bottom-[100px] left-1/2 -translate-x-1/2 w-16 h-16 bg-[#041627] text-white rounded-full shadow-2xl flex items-center justify-center z-50 hover:scale-110 active:scale-95 transition-all border-4 border-white/20"
+          >
+            <Plus className="w-8 h-8" />
+          </button>
+        )}
 
         {/* ITEM MODAL */}
         <AnimatePresence>
